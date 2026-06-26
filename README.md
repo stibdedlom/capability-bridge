@@ -10,7 +10,7 @@ The Capability Bridge turns messy human intent from COG into structured, governe
 - Bounded `ContextBundle` assembly
 - `CapabilityPacket` shaping for SDL
 - Compact `CapabilityPlan` or read-only results back to COG
-- `ApprovalRequest` envelopes and confirmation rituals
+- `ApprovalRequest` / `ApprovalResponse` envelopes for COG-owned approval surfaces
 - `TraceEvent` emission for every decision
 - `ArtifactSummary` packaging for user display
 - `PaneBackend` abstraction for visible agent sessions
@@ -27,7 +27,7 @@ The Capability Bridge turns messy human intent from COG into structured, governe
 ┌─────────────────────────────────────────┐
 │  Layer 2: Swift reference implementation│
 │  Protocols, adapters, pane backends,    │
-│  approval surfaces, model routers       │
+│  approval envelopes, model routers      │
 └─────────────────────────────────────────┘
 ```
 
@@ -38,6 +38,7 @@ The spec layer is thin and derived from implementation needs. It exists so futur
 - A chatbot.
 - A replacement for SDL governance.
 - A replacement for COG workspace UX.
+- A replacement for COG-owned device transport, pairing, queues, or mobile UI.
 - A replacement for AUR research and source grounding.
 - A hardcoded dependency on any single agent runtime, terminal multiplexer, or model provider.
 
@@ -60,7 +61,7 @@ The spec layer is thin and derived from implementation needs. It exists so futur
 │   ├── CapabilityBridgeCOG/       # COG signal adapters
 │   ├── CapabilityBridgeSDL/       # SDL routing/lifecycle adapters
 │   ├── PaneBackends/              # tmux, Zellij, native window adapters
-│   ├── ApprovalSurfaces/          # iOS, watchOS, macOS surfaces
+│   ├── ApprovalSurfaces/          # bridge approval envelope adapters; COG owns UI
 │   └── ModelRouting/              # On-device, cloud, local model adapters
 ├── Tests/
 ├── docs/
