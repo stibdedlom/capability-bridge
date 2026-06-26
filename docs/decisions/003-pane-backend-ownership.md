@@ -2,7 +2,7 @@
 
 ## Status
 
-Accepted.
+Accepted; constrained by [Decision 004](004-cog-bridge-boundary.md).
 
 ## Context
 
@@ -11,6 +11,10 @@ COG is the human workspace surface. The temptation is to let COG manage terminal
 ## Decision
 
 The Capability Bridge owns the `PaneBackend` protocol and the orchestration of visible sessions. COG provides the human surface and renders bridge-managed sessions. COG does not create, stop, or route sessions on its own.
+
+This decision is limited to bridge-managed visible execution sessions and the
+`PaneBackend` protocol. COG still owns workspace surfaces, device UI, pairing,
+and transport as defined by Decision 004.
 
 ## Consequences
 
