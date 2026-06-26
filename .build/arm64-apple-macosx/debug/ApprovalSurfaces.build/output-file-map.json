@@ -1,0 +1,12 @@
+{
+  "": {
+    "swift-dependencies": "/private/tmp/capability-bridge-seed/.build/arm64-apple-macosx/debug/ApprovalSurfaces.build/primary.swiftdeps"
+  },
+  "/private/tmp/capability-bridge-seed/Sources/ApprovalSurfaces/ApprovalSurfacePlaceholder.swift": {
+    "dependencies": "/private/tmp/capability-bridge-seed/.build/arm64-apple-macosx/debug/ApprovalSurfaces.build/ApprovalSurfacePlaceholder.d",
+    "object": "/private/tmp/capability-bridge-seed/.build/arm64-apple-macosx/debug/ApprovalSurfaces.build/ApprovalSurfacePlaceholder.swift.o",
+    "swiftmodule": "/private/tmp/capability-bridge-seed/.build/arm64-apple-macosx/debug/ApprovalSurfaces.build/ApprovalSurfacePlaceholder~partial.swiftmodule",
+    "swift-dependencies": "/private/tmp/capability-bridge-seed/.build/arm64-apple-macosx/debug/ApprovalSurfaces.build/ApprovalSurfacePlaceholder.swiftdeps",
+    "diagnostics": "/private/tmp/capability-bridge-seed/.build/arm64-apple-macosx/debug/ApprovalSurfaces.build/ApprovalSurfacePlaceholder.dia"
+  }
+}

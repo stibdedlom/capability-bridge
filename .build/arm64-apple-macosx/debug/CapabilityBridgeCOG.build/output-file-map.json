@@ -1,0 +1,12 @@
+{
+  "": {
+    "swift-dependencies": "/private/tmp/capability-bridge-seed/.build/arm64-apple-macosx/debug/CapabilityBridgeCOG.build/primary.swiftdeps"
+  },
+  "/private/tmp/capability-bridge-seed/Sources/CapabilityBridgeCOG/COGAdapter.swift": {
+    "dependencies": "/private/tmp/capability-bridge-seed/.build/arm64-apple-macosx/debug/CapabilityBridgeCOG.build/COGAdapter.d",
+    "object": "/private/tmp/capability-bridge-seed/.build/arm64-apple-macosx/debug/CapabilityBridgeCOG.build/COGAdapter.swift.o",
+    "swiftmodule": "/private/tmp/capability-bridge-seed/.build/arm64-apple-macosx/debug/CapabilityBridgeCOG.build/COGAdapter~partial.swiftmodule",
+    "swift-dependencies": "/private/tmp/capability-bridge-seed/.build/arm64-apple-macosx/debug/CapabilityBridgeCOG.build/COGAdapter.swiftdeps",
+    "diagnostics": "/private/tmp/capability-bridge-seed/.build/arm64-apple-macosx/debug/CapabilityBridgeCOG.build/COGAdapter.dia"
+  }
+}

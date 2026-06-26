@@ -22,7 +22,12 @@ This repository implements the Capability Bridge: a protocol-oriented translatio
 
 ## Build and test
 
-TBD. Initial structure uses Swift Package Manager.
+```bash
+swift build
+swift test
+```
+
+The package builds on macOS 26+ with Swift 6.0.
 
 ## Skill routing
 

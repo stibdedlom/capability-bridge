@@ -1,0 +1,3 @@
+module ModelRouting {
+    header "/private/tmp/capability-bridge-seed/.build/arm64-apple-macosx/debug/ModelRouting.build/include/ModelRouting-Swift.h"
+}

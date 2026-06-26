@@ -1,0 +1,8 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "capability packet schema",
+  "type": "object",
+  "description": "Language-agnostic contract for capability packet. See Sources/CapabilityBridge/CapabilityBridge.swift for the Swift reference implementation.",
+  "properties": {},
+  "additionalProperties": true
+}

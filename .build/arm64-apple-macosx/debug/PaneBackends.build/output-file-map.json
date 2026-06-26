@@ -1,0 +1,12 @@
+{
+  "": {
+    "swift-dependencies": "/private/tmp/capability-bridge-seed/.build/arm64-apple-macosx/debug/PaneBackends.build/primary.swiftdeps"
+  },
+  "/private/tmp/capability-bridge-seed/Sources/PaneBackends/PaneBackendPlaceholder.swift": {
+    "dependencies": "/private/tmp/capability-bridge-seed/.build/arm64-apple-macosx/debug/PaneBackends.build/PaneBackendPlaceholder.d",
+    "object": "/private/tmp/capability-bridge-seed/.build/arm64-apple-macosx/debug/PaneBackends.build/PaneBackendPlaceholder.swift.o",
+    "swiftmodule": "/private/tmp/capability-bridge-seed/.build/arm64-apple-macosx/debug/PaneBackends.build/PaneBackendPlaceholder~partial.swiftmodule",
+    "swift-dependencies": "/private/tmp/capability-bridge-seed/.build/arm64-apple-macosx/debug/PaneBackends.build/PaneBackendPlaceholder.swiftdeps",
+    "diagnostics": "/private/tmp/capability-bridge-seed/.build/arm64-apple-macosx/debug/PaneBackends.build/PaneBackendPlaceholder.dia"
+  }
+}

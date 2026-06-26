@@ -1,0 +1,3 @@
+module CapabilityBridgeCOG {
+    header "/private/tmp/capability-bridge-seed/.build/arm64-apple-macosx/debug/CapabilityBridgeCOG.build/include/CapabilityBridgeCOG-Swift.h"
+}

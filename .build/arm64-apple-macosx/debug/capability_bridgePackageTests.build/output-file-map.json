@@ -1,0 +1,12 @@
+{
+  "": {
+    "swift-dependencies": "/private/tmp/capability-bridge-seed/.build/arm64-apple-macosx/debug/capability_bridgePackageTests.build/primary.swiftdeps"
+  },
+  "/private/tmp/capability-bridge-seed/.build/arm64-apple-macosx/debug/capability-bridgePackageTests.derived/runner.swift": {
+    "dependencies": "/private/tmp/capability-bridge-seed/.build/arm64-apple-macosx/debug/capability_bridgePackageTests.build/runner.d",
+    "object": "/private/tmp/capability-bridge-seed/.build/arm64-apple-macosx/debug/capability_bridgePackageTests.build/runner.swift.o",
+    "swiftmodule": "/private/tmp/capability-bridge-seed/.build/arm64-apple-macosx/debug/capability_bridgePackageTests.build/runner~partial.swiftmodule",
+    "swift-dependencies": "/private/tmp/capability-bridge-seed/.build/arm64-apple-macosx/debug/capability_bridgePackageTests.build/runner.swiftdeps",
+    "diagnostics": "/private/tmp/capability-bridge-seed/.build/arm64-apple-macosx/debug/capability_bridgePackageTests.build/runner.dia"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "": {
+    "swift-dependencies": "/private/tmp/capability-bridge-seed/.build/arm64-apple-macosx/debug/CapabilityBridgeSDL.build/primary.swiftdeps"
+  },
+  "/private/tmp/capability-bridge-seed/Sources/CapabilityBridgeSDL/SDLAdapter.swift": {
+    "dependencies": "/private/tmp/capability-bridge-seed/.build/arm64-apple-macosx/debug/CapabilityBridgeSDL.build/SDLAdapter.d",
+    "object": "/private/tmp/capability-bridge-seed/.build/arm64-apple-macosx/debug/CapabilityBridgeSDL.build/SDLAdapter.swift.o",
+    "swiftmodule": "/private/tmp/capability-bridge-seed/.build/arm64-apple-macosx/debug/CapabilityBridgeSDL.build/SDLAdapter~partial.swiftmodule",
+    "swift-dependencies": "/private/tmp/capability-bridge-seed/.build/arm64-apple-macosx/debug/CapabilityBridgeSDL.build/SDLAdapter.swiftdeps",
+    "diagnostics": "/private/tmp/capability-bridge-seed/.build/arm64-apple-macosx/debug/CapabilityBridgeSDL.build/SDLAdapter.dia"
+  }
+}
