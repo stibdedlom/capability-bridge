@@ -1,5 +1,0 @@
----
-triple:          'arm64-apple-darwin'
-binary-path:     '/private/tmp/capability-bridge-seed/.build/arm64-apple-macosx/debug/capability-bridgePackageTests.xctest/Contents/MacOS/capability-bridgePackageTests'
-relocations:     []
-...

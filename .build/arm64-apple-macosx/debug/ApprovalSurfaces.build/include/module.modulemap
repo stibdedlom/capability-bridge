@@ -1,3 +1,0 @@
-module ApprovalSurfaces {
-    header "/private/tmp/capability-bridge-seed/.build/arm64-apple-macosx/debug/ApprovalSurfaces.build/include/ApprovalSurfaces-Swift.h"
-}

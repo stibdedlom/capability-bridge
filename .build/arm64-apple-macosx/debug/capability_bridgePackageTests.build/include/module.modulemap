@@ -1,3 +1,0 @@
-module capability_bridgePackageTests {
-    header "/private/tmp/capability-bridge-seed/.build/arm64-apple-macosx/debug/capability_bridgePackageTests.build/include/capability-bridgePackageTests-Swift.h"
-}

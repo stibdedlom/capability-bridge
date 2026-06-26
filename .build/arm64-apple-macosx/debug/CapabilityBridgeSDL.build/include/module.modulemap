@@ -1,3 +1,0 @@
-module CapabilityBridgeSDL {
-    header "/private/tmp/capability-bridge-seed/.build/arm64-apple-macosx/debug/CapabilityBridgeSDL.build/include/CapabilityBridgeSDL-Swift.h"
-}

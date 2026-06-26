@@ -1,3 +1,0 @@
-module PaneBackends {
-    header "/private/tmp/capability-bridge-seed/.build/arm64-apple-macosx/debug/PaneBackends.build/include/PaneBackends-Swift.h"
-}
