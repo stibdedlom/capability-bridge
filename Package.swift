@@ -1,6 +1,8 @@
 // swift-tools-version: 6.2
 import PackageDescription
 
+let workspaceTypesPath = "../../cocogiri/workspace-types-worktree-cog-bridge-1"
+
 let package = Package(
     name: "capability-bridge",
     platforms: [
@@ -14,13 +16,16 @@ let package = Package(
         .library(name: "ApprovalSurfaces", targets: ["ApprovalSurfaces"]),
         .library(name: "ModelRouting", targets: ["ModelRouting"]),
     ],
+    dependencies: [
+        .package(name: "WorkspaceTypes", path: workspaceTypesPath)
+    ],
     targets: [
-        .target(name: "CapabilityBridge"),
-        .target(name: "CapabilityBridgeCOG", dependencies: ["CapabilityBridge"]),
-        .target(name: "CapabilityBridgeSDL", dependencies: ["CapabilityBridge"]),
-        .target(name: "PaneBackends", dependencies: ["CapabilityBridge"]),
-        .target(name: "ApprovalSurfaces", dependencies: ["CapabilityBridge"]),
-        .target(name: "ModelRouting", dependencies: ["CapabilityBridge"]),
-        .testTarget(name: "CapabilityBridgeTests", dependencies: ["CapabilityBridge"]),
+        .target(name: "CapabilityBridge", dependencies: ["WorkspaceTypes"]),
+        .target(name: "CapabilityBridgeCOG", dependencies: ["CapabilityBridge", "WorkspaceTypes"]),
+        .target(name: "CapabilityBridgeSDL", dependencies: ["CapabilityBridge", "WorkspaceTypes"]),
+        .target(name: "PaneBackends", dependencies: ["CapabilityBridge", "WorkspaceTypes"]),
+        .target(name: "ApprovalSurfaces", dependencies: ["CapabilityBridge", "WorkspaceTypes"]),
+        .target(name: "ModelRouting", dependencies: ["CapabilityBridge", "WorkspaceTypes"]),
+        .testTarget(name: "CapabilityBridgeTests", dependencies: ["CapabilityBridge", "CapabilityBridgeCOG", "CapabilityBridgeSDL", "PaneBackends", "WorkspaceTypes"]),
     ]
 )
