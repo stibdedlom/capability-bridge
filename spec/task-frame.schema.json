@@ -2,7 +2,68 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "task frame schema",
   "type": "object",
-  "description": "Language-agnostic contract for task frame. See Sources/CapabilityBridge/CapabilityBridge.swift for the Swift reference implementation.",
-  "properties": {},
-  "additionalProperties": true
+  "description": "Language-agnostic contract for a framed, routeable unit of work produced from a COG Intent. See Sources/CapabilityBridge/CapabilityBridge.swift for the Swift reference implementation.",
+  "required": [
+    "taskRef",
+    "userGoal",
+    "sourceIntent",
+    "riskTier",
+    "autonomyMode",
+    "requestedOutcome",
+    "constraints",
+    "status",
+    "openQuestions"
+  ],
+  "properties": {
+    "taskRef": {
+      "type": "string",
+      "description": "Stable identifier for this task, typically derived from the source Intent id."
+    },
+    "userGoal": {
+      "type": "string",
+      "description": "The human-readable goal extracted from the intent."
+    },
+    "sourceIntent": {
+      "type": "string",
+      "description": "Identifier or name of the surface that produced the intent (e.g. voice, text, tap)."
+    },
+    "workspaceTarget": {
+      "type": ["string", "null"],
+      "description": "Optional workspace or project target the intent refers to."
+    },
+    "repoContext": {
+      "type": ["string", "null"],
+      "description": "Optional repository or project context."
+    },
+    "riskTier": {
+      "type": "string",
+      "enum": ["low", "medium", "high", "critical"],
+      "description": "Estimated risk tier of the task."
+    },
+    "autonomyMode": {
+      "type": "string",
+      "enum": ["advise", "plan", "execute"],
+      "description": "Requested autonomy level for the task."
+    },
+    "requestedOutcome": {
+      "type": "string",
+      "description": "What the user expects to receive back."
+    },
+    "constraints": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Free-form constraints that must be respected."
+    },
+    "status": {
+      "type": "string",
+      "enum": ["new", "framed", "planned", "approved", "running", "completed", "failed", "cancelled"],
+      "description": "Lifecycle status of the task frame."
+    },
+    "openQuestions": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Questions that must be answered before execution."
+    }
+  },
+  "additionalProperties": false
 }

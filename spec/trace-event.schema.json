@@ -2,7 +2,75 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "trace event schema",
   "type": "object",
-  "description": "Language-agnostic contract for trace event. See Sources/CapabilityBridge/CapabilityBridge.swift for the Swift reference implementation.",
-  "properties": {},
-  "additionalProperties": true
+  "description": "Language-agnostic contract for an append-only correlation record emitted by the bridge. See Sources/CapabilityBridge/TraceEventRequirements.swift for Phase 1 field requirements.",
+  "required": [
+    "eventType",
+    "traceId",
+    "subjectRef",
+    "status",
+    "outcome",
+    "payloadSummary",
+    "payloadHash"
+  ],
+  "properties": {
+    "eventType": {
+      "type": "string",
+      "enum": [
+        "intent.received",
+        "task.framed",
+        "plan.produced",
+        "route.selected",
+        "approval.requested",
+        "approval.resolved",
+        "capability.invoked",
+        "capability.completed",
+        "trace.error"
+      ],
+      "description": "Well-known event kind. Additional kinds may be rejected by strict validators."
+    },
+    "traceId": {
+      "type": "string",
+      "description": "Correlation identifier shared across all events for one top-level user request."
+    },
+    "parentEventId": {
+      "type": ["string", "null"],
+      "description": "Identifier of the parent event, if any, forming a trace tree."
+    },
+    "subjectRef": {
+      "type": "string",
+      "description": "Reference to the entity this event is about (intent id, task ref, plan ref, etc.)."
+    },
+    "status": {
+      "type": "string",
+      "description": "Runtime status of the event (e.g. ok, error, pending)."
+    },
+    "outcome": {
+      "type": "string",
+      "description": "Human-readable outcome or disposition."
+    },
+    "payloadSummary": {
+      "type": "string",
+      "description": "Compact, non-sensitive summary of the event payload."
+    },
+    "payloadHash": {
+      "type": "string",
+      "description": "Cryptographic hash of the canonical serialized payload for integrity."
+    },
+    "artifactRefs": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "References to artifacts produced or consumed by this event."
+    },
+    "approvalRefs": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "References to approval requests or resolutions tied to this event."
+    },
+    "attributes": {
+      "type": "object",
+      "additionalProperties": { "type": "string" },
+      "description": "Kind-specific key-value attributes required or useful for validation and correlation."
+    }
+  },
+  "additionalProperties": false
 }

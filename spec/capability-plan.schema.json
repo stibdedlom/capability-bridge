@@ -1,0 +1,70 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "capability plan schema",
+  "type": "object",
+  "description": "Language-agnostic contract for the bridge's routing plan: one primary capability route, zero or more fallback routes, confidence, and authority requirements. See Sources/CapabilityBridge/CapabilityPlan.swift and Sources/CapabilityBridge/Routing.swift for the Swift reference implementation.",
+  "required": [
+    "taskFrameRef",
+    "primaryRoute",
+    "fallbackRoutes",
+    "authorityRequired",
+    "tracePolicy",
+    "estimatedRiskTier"
+  ],
+  "properties": {
+    "taskFrameRef": {
+      "type": "string",
+      "description": "Reference to the TaskFrame this plan was produced for."
+    },
+    "primaryRoute": {
+      "$ref": "#/definitions/route"
+    },
+    "fallbackRoutes": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/route" },
+      "description": "Ordered list of fallback routes for graceful degradation."
+    },
+    "authorityRequired": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Authority gates that must be satisfied before execution."
+    },
+    "tracePolicy": {
+      "type": "string",
+      "description": "Policy controlling trace emission for this plan (e.g. emit-all)."
+    },
+    "estimatedRiskTier": {
+      "type": "string",
+      "enum": ["low", "medium", "high", "critical"],
+      "description": "Risk tier estimated by the planner for the selected route."
+    }
+  },
+  "definitions": {
+    "route": {
+      "type": "object",
+      "required": ["capability", "invocationMode", "reason", "confidence"],
+      "properties": {
+        "capability": {
+          "type": "string",
+          "description": "Capability identifier."
+        },
+        "invocationMode": {
+          "type": "string",
+          "enum": ["dry-run", "execute"],
+          "description": "Invocation mode for this route."
+        },
+        "reason": {
+          "type": "string",
+          "description": "Human-readable explanation for why this route was selected."
+        },
+        "confidence": {
+          "type": "string",
+          "enum": ["none", "low", "medium", "high", "certain"],
+          "description": "Confidence level for this route."
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

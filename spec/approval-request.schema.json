@@ -2,7 +2,54 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "approval request schema",
   "type": "object",
-  "description": "Language-agnostic contract for approval request. See Sources/CapabilityBridge/CapabilityBridge.swift for the Swift reference implementation.",
-  "properties": {},
-  "additionalProperties": true
+  "description": "Language-agnostic contract for a human decision envelope for risky actions. See Sources/CapabilityBridge/CapabilityBridge.swift for the Swift reference implementation.",
+  "required": [
+    "riskTier",
+    "requestedAction",
+    "evidenceRefs",
+    "scope",
+    "prohibitedActions",
+    "confirmationRitual",
+    "approvalState"
+  ],
+  "properties": {
+    "riskTier": {
+      "type": "string",
+      "enum": ["low", "medium", "high", "critical"],
+      "description": "Risk tier of the requested action."
+    },
+    "requestedAction": {
+      "type": "string",
+      "description": "Human-readable description of what is being requested."
+    },
+    "evidenceRefs": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "References to evidence the user should review before approving."
+    },
+    "scope": {
+      "type": "string",
+      "description": "Scope of the approval (paths, capabilities, operations)."
+    },
+    "expiresAt": {
+      "type": ["string", "null"],
+      "format": "date-time",
+      "description": "Optional ISO 8601 expiry timestamp."
+    },
+    "prohibitedActions": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Actions explicitly prohibited even if approved."
+    },
+    "confirmationRitual": {
+      "type": "string",
+      "description": "Surface ritual required to confirm approval (e.g. tap-approve, hold-to-confirm)."
+    },
+    "approvalState": {
+      "type": "string",
+      "enum": ["pending", "approved", "denied", "expired"],
+      "description": "Current state of the approval request."
+    }
+  },
+  "additionalProperties": false
 }

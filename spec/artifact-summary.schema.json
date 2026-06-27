@@ -2,7 +2,55 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "artifact summary schema",
   "type": "object",
-  "description": "Language-agnostic contract for artifact summary. See Sources/CapabilityBridge/CapabilityBridge.swift for the Swift reference implementation.",
-  "properties": {},
-  "additionalProperties": true
+  "description": "Language-agnostic contract for a compact result for user display. See Sources/CapabilityBridge/CapabilityBridge.swift for the Swift reference implementation.",
+  "required": [
+    "artifactRef",
+    "artifactType",
+    "pathOrURI",
+    "fingerprint",
+    "producerCapability",
+    "title",
+    "summary",
+    "conformanceSummary",
+    "redactionState"
+  ],
+  "properties": {
+    "artifactRef": {
+      "type": "string",
+      "description": "Stable reference to the artifact."
+    },
+    "artifactType": {
+      "type": "string",
+      "description": "Type of artifact (file, schema, trace, etc.)."
+    },
+    "pathOrURI": {
+      "type": "string",
+      "description": "Location of the artifact."
+    },
+    "fingerprint": {
+      "type": "string",
+      "description": "Hash or fingerprint of the artifact contents."
+    },
+    "producerCapability": {
+      "type": "string",
+      "description": "Capability that produced the artifact."
+    },
+    "title": {
+      "type": "string",
+      "description": "Short title for display."
+    },
+    "summary": {
+      "type": "string",
+      "description": "Human-readable summary of the artifact."
+    },
+    "conformanceSummary": {
+      "type": "string",
+      "description": "Summary of conformance checks or status."
+    },
+    "redactionState": {
+      "type": "string",
+      "description": "Redaction or privacy state of the artifact (e.g. none, redacted)."
+    }
+  },
+  "additionalProperties": false
 }

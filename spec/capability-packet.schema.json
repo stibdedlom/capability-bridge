@@ -2,7 +2,53 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "capability packet schema",
   "type": "object",
-  "description": "Language-agnostic contract for capability packet. See Sources/CapabilityBridge/CapabilityBridge.swift for the Swift reference implementation.",
-  "properties": {},
-  "additionalProperties": true
+  "description": "Language-agnostic contract for a request from the bridge to the SDL capability layer. See Sources/CapabilityBridge/CapabilityBridge.swift for the Swift reference implementation.",
+  "required": [
+    "mode",
+    "invocationMode",
+    "inputs",
+    "contextBundleRef",
+    "authorityScope",
+    "allowMutation",
+    "expectedOutputs"
+  ],
+  "properties": {
+    "mode": {
+      "type": "string",
+      "description": "Interaction mode (e.g. dry-run, execute, plan, review)."
+    },
+    "selectedCapability": {
+      "type": ["string", "null"],
+      "description": "Identifier of the capability being invoked, if a route has been selected."
+    },
+    "invocationMode": {
+      "type": "string",
+      "enum": ["dry-run", "execute"],
+      "description": "Whether the capability should actually mutate state."
+    },
+    "inputs": {
+      "type": "object",
+      "additionalProperties": { "type": "string" },
+      "description": "Key-value inputs for the capability."
+    },
+    "contextBundleRef": {
+      "type": "string",
+      "description": "Reference to the ContextBundle that accompanies this packet."
+    },
+    "authorityScope": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Authority tokens or scopes granted to this invocation."
+    },
+    "allowMutation": {
+      "type": "boolean",
+      "description": "True if the capability is permitted to mutate state."
+    },
+    "expectedOutputs": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Names or references of outputs the caller expects."
+    }
+  },
+  "additionalProperties": false
 }

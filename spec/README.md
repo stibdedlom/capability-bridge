@@ -7,6 +7,7 @@ These schemas exist so non-Swift agents and runtimes can participate in the brid
 ## Contracts
 
 - `task-frame.schema.json` — intake artifact for a unit of work
+- `capability-plan.schema.json` — routing plan with primary route, fallbacks, confidence, and authority
 - `context-bundle.schema.json` — bounded context package with provenance
 - `capability-packet.schema.json` — request from bridge to SDL capability layer
 - `approval-request.schema.json` — human decision envelope for risky actions

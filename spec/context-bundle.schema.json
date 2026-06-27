@@ -2,7 +2,61 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "context bundle schema",
   "type": "object",
-  "description": "Language-agnostic contract for context bundle. See Sources/CapabilityBridge/CapabilityBridge.swift for the Swift reference implementation.",
-  "properties": {},
-  "additionalProperties": true
+  "description": "Language-agnostic contract for a bounded context package with provenance. See Sources/CapabilityBridge/CapabilityBridge.swift for the Swift reference implementation.",
+  "required": [
+    "noteRefs",
+    "memorySnippets",
+    "artifactRefs",
+    "aurRefs",
+    "omissions",
+    "freshness",
+    "tokenBudget",
+    "rawContentPolicy"
+  ],
+  "properties": {
+    "workspaceSnapshot": {
+      "type": ["string", "null"],
+      "description": "Optional snapshot or summary of the current workspace state."
+    },
+    "noteRefs": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "References to notes included in the bundle."
+    },
+    "memorySnippets": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Short memory snippets promoted into the bundle."
+    },
+    "artifactRefs": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "References to artifacts the capability should consider."
+    },
+    "aurRefs": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "AUR (research/source) references included in the bundle."
+    },
+    "omissions": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Items intentionally excluded from the bundle, with reason."
+    },
+    "freshness": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 timestamp when the bundle was assembled."
+    },
+    "tokenBudget": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Approximate token budget for the consuming capability."
+    },
+    "rawContentPolicy": {
+      "type": "string",
+      "description": "Policy controlling how raw content is handled (e.g. redact-sensitive)."
+    }
+  },
+  "additionalProperties": false
 }
