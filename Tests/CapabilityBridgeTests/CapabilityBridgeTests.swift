@@ -16,7 +16,7 @@ struct CapabilityBridgeTests {
         traceID: String = "trace-1"
     ) -> CogIntent {
         CogIntent(
-            contractVersion: "0.1.0",
+            contractVersion: "0.2.0",
             traceID: traceID,
             sourceIntent: Intent(
                 action: action,
@@ -35,7 +35,7 @@ struct CapabilityBridgeTests {
 
     private func makeContext(traceID: String = "trace-1") -> CogContext {
         CogContext(
-            contractVersion: "0.1.0",
+            contractVersion: "0.2.0",
             traceID: traceID,
             activeDeviceID: "test-device",
             transportPath: .offline,
@@ -86,7 +86,7 @@ struct CapabilityBridgeTests {
     @Test("CogIntentAdapter adapt(response:) returns nil in V0")
     func cogAdapterApprovalResponseStub() async throws {
         let response = CogApprovalResponse(
-            contractVersion: "0.1.0",
+            contractVersion: "0.2.0",
             traceID: "trace-1",
             approvalRef: "approval-1",
             decision: .approved,
@@ -103,7 +103,7 @@ struct CapabilityBridgeTests {
     @Test("ContextBundle builder captures bounded context fields")
     func contextBundleBuilder() async throws {
         let context = CogContext(
-            contractVersion: "0.1.0",
+            contractVersion: "0.2.0",
             traceID: "trace-1",
             activeDeviceID: "device-1",
             transportPath: .bonjour,
@@ -193,7 +193,7 @@ struct CapabilityBridgeTests {
     @Test("SdlBridgeAdapter respond returns success(nil)")
     func sdlAdapterRespond() async throws {
         let response = CogApprovalResponse(
-            contractVersion: "0.1.0",
+            contractVersion: "0.2.0",
             traceID: "trace-1",
             approvalRef: "approval-1",
             decision: .approved,
@@ -209,7 +209,7 @@ struct CapabilityBridgeTests {
     func traceEmitterNoOp() async throws {
         let emitter = TraceEventEmitter()
         let event = CogTraceEvent(
-            contractVersion: "0.1.0",
+            contractVersion: "0.2.0",
             traceID: "trace-1",
             eventID: "event-1",
             eventType: "test",
