@@ -1,10 +1,6 @@
 // swift-tools-version: 6.2
 import PackageDescription
 
-// PR-prep: switch the WorkspaceTypes dependency to a git URL before opening the PR:
-// `.package(url: "https://github.com/cocogiri/workspace-types.git", branch: "feature/cog-bridge-contract-alignment")`
-let workspaceTypesPath = "../../cocogiri/workspace-types-worktree-cog-bridge-1"
-
 let package = Package(
     name: "capability-bridge",
     platforms: [
@@ -22,7 +18,7 @@ let package = Package(
         .library(name: "ModelRouting", targets: ["ModelRouting"]),
     ],
     dependencies: [
-        .package(name: "WorkspaceTypes", path: workspaceTypesPath)
+        .package(url: "https://github.com/cocogiri/workspace-types.git", branch: "feature/cog-bridge-contract-alignment")
     ],
     targets: [
         .target(name: "CapabilityBridge", dependencies: ["WorkspaceTypes"]),
