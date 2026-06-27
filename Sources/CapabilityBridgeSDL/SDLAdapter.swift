@@ -41,12 +41,15 @@ public struct SDLAdapter: Sendable {
     ///   - plan: The bridge routing plan.
     ///   - contextBundle: The bounded context to attach.
     ///   - contextBundleRef: A stable reference for the context bundle.
+    ///   - approvedScope: Optional scope approved by a human approval surface.
+    ///     When provided, the packet's authority is intersected with this scope.
     /// - Returns: A `CapabilityPacket` with mutation authority derived from the
-    ///   plan and its primary route.
+    ///   plan, its primary route, and any approved scope.
     public func adapt(
         plan: CapabilityPlan,
         contextBundle: ContextBundle,
-        contextBundleRef: String
+        contextBundleRef: String,
+        approvedScope: [String]? = nil
     ) throws -> CapabilityPacket {
         guard !plan.primaryRoute.capability.isEmpty else {
             throw SDLAdapterError.noPrimaryRoute(taskFrameRef: plan.taskFrameRef)
@@ -56,7 +59,10 @@ public struct SDLAdapter: Sendable {
             ? Self.defaultInvocationMode
             : plan.primaryRoute.invocationMode
 
-        let allowMutation = invocationMode == "execute" && !plan.authorityRequired.contains("approval-gate")
+        let effectiveAuthority = effectiveAuthorityScope(plan: plan, approvedScope: approvedScope)
+        let requiresApproval = plan.authorityRequired.contains("approval-gate")
+        let approved = approvedScope.map { !$0.isEmpty } ?? !requiresApproval
+        let allowMutation = invocationMode == "execute" && approved
 
         var inputs: [String: String] = [
             "taskFrameRef": plan.taskFrameRef,
@@ -84,10 +90,16 @@ public struct SDLAdapter: Sendable {
             invocationMode: invocationMode,
             inputs: inputs,
             contextBundleRef: contextBundleRef,
-            authorityScope: plan.authorityRequired,
+            authorityScope: effectiveAuthority,
             allowMutation: allowMutation,
             expectedOutputs: ["artifactSummary", "traceEventBatch"]
         )
+    }
+
+    private func effectiveAuthorityScope(plan: CapabilityPlan, approvedScope: [String]?) -> [String] {
+        guard let approvedScope else { return plan.authorityRequired }
+        let approvedSet = Set(approvedScope)
+        return plan.authorityRequired.filter { approvedSet.contains($0) || $0 == "approval-gate" }
     }
 
     /// Build a context bundle for the given task frame and plan.

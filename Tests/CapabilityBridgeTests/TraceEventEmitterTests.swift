@@ -71,10 +71,10 @@ struct TraceEventEmitterTests {
             expectedOutputs: ["artifactSummary"]
         )
 
-        let traceId = try await emitter.tracePipeline(intent: intent, frame: frame, plan: plan, packet: packet)
+        let result = try await emitter.tracePipeline(intent: intent, frame: frame, plan: plan, packet: packet)
 
         let events = await sink.events
-        #expect(events.allSatisfy { $0.traceId == traceId })
+        #expect(events.allSatisfy { $0.traceId == result.traceId })
 
         #expect(await sink.events(ofKind: .intentReceived).count == 1)
         #expect(await sink.events(ofKind: .taskFramed).count == 1)
@@ -116,11 +116,54 @@ struct TraceEventEmitterTests {
             estimatedRiskTier: "low"
         )
 
-        let traceId = try await emitter.tracePipeline(intent: intent, frame: frame, plan: plan)
+        let result = try await emitter.tracePipeline(intent: intent, frame: frame, plan: plan)
         let events = await sink.events
 
         for event in events {
-            #expect(event.traceId == traceId)
+            #expect(event.traceId == result.traceId)
         }
+    }
+
+    @Test("Each trace event has a unique event id and parent-child links form a tree")
+    func uniqueEventIdsAndParentLinks() async throws {
+        let sink = InMemoryTraceEventSink()
+        let emitter = TraceEventEmitter(sink: sink)
+
+        let intent = Intent(id: "intent-5", source: "voice", rawText: "Run tests")
+        let frame = TaskFrame(taskRef: "task-5", userGoal: "Run tests", sourceIntent: "voice")
+        let plan = CapabilityPlan(
+            taskFrameRef: "task-5",
+            primaryRoute: Route(capability: "capability-session-orchestrator", invocationMode: "execute", reason: "Test", confidence: .high),
+            estimatedRiskTier: "low"
+        )
+
+        let result = try await emitter.tracePipeline(intent: intent, frame: frame, plan: plan)
+        let events = await sink.events
+
+        var eventIds: Set<String> = []
+        for event in events {
+            #expect(event.eventId.isEmpty == false)
+            #expect(eventIds.insert(event.eventId).inserted)
+        }
+
+        let intentEvent = events.first { $0.eventType == TraceEventKind.intentReceived.rawValue }!
+        let frameEvent = events.first { $0.eventType == TraceEventKind.taskFramed.rawValue }!
+        #expect(frameEvent.parentEventId == intentEvent.eventId)
+        #expect(result.intentEventId == intentEvent.eventId)
+    }
+
+    @Test("payloadHash is a real SHA-256 hex digest")
+    func realPayloadHash() async throws {
+        let sink = InMemoryTraceEventSink()
+        let emitter = TraceEventEmitter(sink: sink)
+        let intent = Intent(id: "intent-6", source: "text", rawText: "Hello")
+
+        _ = try await emitter.intentReceived(intent)
+
+        let event = await sink.events.first!
+        #expect(event.payloadHash.hasPrefix("sha256:"))
+        let hex = String(event.payloadHash.dropFirst(7))
+        #expect(hex.count == 64)
+        #expect(hex.allSatisfy { $0.isHexDigit })
     }
 }

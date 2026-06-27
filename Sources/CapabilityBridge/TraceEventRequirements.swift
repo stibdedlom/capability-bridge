@@ -58,6 +58,7 @@ public struct TraceEventRequirements: Sendable {
     /// Requirements that apply to every trace event regardless of kind.
     public static var base: [TraceRequirement] {
         [
+            TraceRequirement(field: "eventId", required: true),
             TraceRequirement(field: "eventType", required: true),
             TraceRequirement(field: "traceId", required: true),
             TraceRequirement(field: "subjectRef", required: true),
@@ -152,6 +153,7 @@ public struct TraceEventRequirements: Sendable {
 
     private static func fieldValue(_ event: TraceEvent, fieldPath: String) -> String? {
         switch fieldPath {
+        case "eventId": return event.eventId
         case "eventType": return event.eventType
         case "traceId": return event.traceId
         case "subjectRef": return event.subjectRef
@@ -187,6 +189,7 @@ public enum TraceValidationResult: Sendable {
 /// The builder enforces required fields by construction and produces a
 /// `TraceEvent` that can be validated with `TraceEventRequirements`.
 public struct TraceEventBuilder: Sendable {
+    public var eventId: String?
     public var eventType: TraceEventKind
     public var traceId: String
     public var parentEventId: String?
@@ -200,6 +203,7 @@ public struct TraceEventBuilder: Sendable {
     public var attributes: [String: String]
 
     public init(
+        eventId: String? = nil,
         eventType: TraceEventKind,
         traceId: String,
         parentEventId: String? = nil,
@@ -212,6 +216,7 @@ public struct TraceEventBuilder: Sendable {
         approvalRefs: [String] = [],
         attributes: [String: String] = [:]
     ) {
+        self.eventId = eventId
         self.eventType = eventType
         self.traceId = traceId
         self.parentEventId = parentEventId
@@ -227,6 +232,7 @@ public struct TraceEventBuilder: Sendable {
 
     public func build() -> TraceEvent {
         TraceEvent(
+            eventId: eventId ?? UUID().uuidString,
             eventType: eventType.rawValue,
             traceId: traceId,
             parentEventId: parentEventId,

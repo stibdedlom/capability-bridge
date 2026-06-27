@@ -149,6 +149,7 @@ public struct ApprovalRequest: Sendable {
 
 /// An append-only correlation record.
 public struct TraceEvent: Sendable {
+    public var eventId: String
     public var eventType: String
     public var traceId: String
     public var parentEventId: String?
@@ -162,6 +163,7 @@ public struct TraceEvent: Sendable {
     public var attributes: [String: String]
 
     public init(
+        eventId: String,
         eventType: String,
         traceId: String,
         parentEventId: String? = nil,
@@ -174,6 +176,7 @@ public struct TraceEvent: Sendable {
         approvalRefs: [String] = [],
         attributes: [String: String] = [:]
     ) {
+        self.eventId = eventId
         self.eventType = eventType
         self.traceId = traceId
         self.parentEventId = parentEventId

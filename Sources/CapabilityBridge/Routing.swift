@@ -181,7 +181,7 @@ public struct DefaultCapabilityPlanner: CapabilityPlanner {
 
     private func deriveAuthority(primary: RoutingRule, frame: TaskFrame) -> [String] {
         var authority = primary.authority
-        if frame.riskTier == "high" {
+        if frame.riskTier == "high" || frame.riskTier == "critical" {
             authority.append("approval-gate")
         }
         if primary.invocationMode == "execute" {

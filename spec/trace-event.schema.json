@@ -4,6 +4,7 @@
   "type": "object",
   "description": "Language-agnostic contract for an append-only correlation record emitted by the bridge. See Sources/CapabilityBridge/TraceEventRequirements.swift for Phase 1 field requirements.",
   "required": [
+    "eventId",
     "eventType",
     "traceId",
     "subjectRef",
@@ -13,6 +14,10 @@
     "payloadHash"
   ],
   "properties": {
+    "eventId": {
+      "type": "string",
+      "description": "Unique identifier for this individual event, used for parent-child trace trees."
+    },
     "eventType": {
       "type": "string",
       "enum": [
@@ -54,7 +59,7 @@
     },
     "payloadHash": {
       "type": "string",
-      "description": "Cryptographic hash of the canonical serialized payload for integrity."
+      "description": "Cryptographic hash (SHA-256) of the canonical serialized payload for integrity, prefixed with 'sha256:'."
     },
     "artifactRefs": {
       "type": "array",

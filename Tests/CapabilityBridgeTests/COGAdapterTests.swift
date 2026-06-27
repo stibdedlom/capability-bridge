@@ -54,7 +54,7 @@ struct COGAdapterTests {
         let adapter = makeAdapter()
         let frame = TaskFrame(
             taskRef: "task-3",
-            userGoal: "Review the schema contract",
+            userGoal: "Run the tests",
             sourceIntent: "tap",
             riskTier: "low"
         )

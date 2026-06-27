@@ -71,6 +71,71 @@ struct ApprovalSurfaceTests {
         #expect(result.status == "ok")
     }
 
+    @Test("Approval trace events are emitted")
+    func approvalTraceEvents() async throws {
+        let sink = InMemoryTraceEventSink()
+        let emitter = TraceEventEmitter(sink: sink)
+        let surface = StubApprovalSurface(
+            response: BridgeApprovalResponse(requestRef: "approval-trace-1", approvalState: "approved", approvedScope: ["allow_mutation"])
+        )
+        let adapter = COGAdapter(
+            planner: DefaultCapabilityPlanner(),
+            sdlAdapter: SDLAdapter(registryRef: "sdl://registry/test"),
+            traceEmitter: emitter,
+            approvalSurface: surface
+        )
+
+        let intent = Intent(id: "intent-5", source: "voice", rawText: "Delete the old branch")
+        _ = try await adapter.handle(intent: intent)
+
+        #expect(await sink.events(ofKind: .approvalRequested).count == 1)
+        #expect(await sink.events(ofKind: .approvalResolved).count == 1)
+
+        let resolved = await sink.events(ofKind: .approvalResolved).first!
+        #expect(resolved.approvalRefs.contains("approval-trace-1"))
+        #expect(resolved.attributes["approvalRequest.approvalState"] == "approved")
+    }
+
+    @Test("handle(frame:) applies approval gating")
+    func framedTaskApprovalGating() async throws {
+        let sink = InMemoryTraceEventSink()
+        let emitter = TraceEventEmitter(sink: sink)
+        let surface = StubApprovalSurface(
+            response: BridgeApprovalResponse(requestRef: "approval-frame-1", approvalState: "approved", approvedScope: ["allow_mutation"])
+        )
+        let adapter = COGAdapter(
+            planner: DefaultCapabilityPlanner(),
+            sdlAdapter: SDLAdapter(registryRef: "sdl://registry/test"),
+            traceEmitter: emitter,
+            approvalSurface: surface
+        )
+
+        let frame = TaskFrame(
+            taskRef: "task-frame-1",
+            userGoal: "Delete the old branch",
+            sourceIntent: "tap",
+            riskTier: "high"
+        )
+
+        let result = try await adapter.handle(frame: frame)
+        #expect(result.status == "ok")
+        #expect(await sink.events(ofKind: .approvalRequested).count == 1)
+    }
+
+    @Test("Approved scope narrows packet authority")
+    func approvedScopeNarrowsAuthority() async throws {
+        let surface = StubApprovalSurface(
+            response: BridgeApprovalResponse(requestRef: "approval-narrow-1", approvalState: "approved", approvedScope: ["branch_or_worktree_isolation"])
+        )
+        let adapter = makeAdapter(surface: surface)
+        let intent = Intent(id: "intent-6", source: "voice", rawText: "Delete the old branch")
+
+        let result = try await adapter.handle(intent: intent)
+
+        #expect(result.capabilityPacket?.allowMutation == false)
+        #expect(result.capabilityPacket?.authorityScope.contains("allow_mutation") == false)
+    }
+
     @Test("ApprovalResponse isApproved reflects state")
     func responseState() async throws {
         let approved = BridgeApprovalResponse(requestRef: "a", approvalState: "approved")

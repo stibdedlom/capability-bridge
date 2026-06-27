@@ -1,4 +1,5 @@
 import Foundation
+import CryptoKit
 
 /// Destination for emitted trace events.
 ///
@@ -150,6 +151,62 @@ public actor TraceEventEmitter: Sendable {
         return event
     }
 
+    /// Emit `approval.requested` when a human approval gate is entered.
+    @discardableResult
+    public func approvalRequested(
+        _ request: ApprovalRequest,
+        parentEventId: String? = nil,
+        traceId: String
+    ) async throws -> TraceEvent {
+        let event = TraceEventBuilder(
+            eventType: .approvalRequested,
+            traceId: traceId,
+            parentEventId: parentEventId,
+            subjectRef: request.scope,
+            status: "pending",
+            outcome: "approval requested for \(request.requestedAction)",
+            payloadSummary: "riskTier=\(request.riskTier) scope=\(request.scope)",
+            payloadHash: hash(request.requestedAction + request.scope),
+            attributes: [
+                "approvalRequest.riskTier": request.riskTier,
+                "approvalRequest.requestedAction": request.requestedAction,
+                "approvalRequest.scope": request.scope,
+                "approvalRequest.approvalState": request.approvalState
+            ]
+        ).build()
+        try await emit(event)
+        return event
+    }
+
+    /// Emit `approval.resolved` when a human approval gate is resolved.
+    @discardableResult
+    public func approvalResolved(
+        request: ApprovalRequest,
+        response: BridgeApprovalResponse,
+        parentEventId: String? = nil,
+        traceId: String
+    ) async throws -> TraceEvent {
+        let event = TraceEventBuilder(
+            eventType: .approvalResolved,
+            traceId: traceId,
+            parentEventId: parentEventId,
+            subjectRef: response.requestRef,
+            status: response.isApproved ? "approved" : "denied",
+            outcome: "approval \(response.approvalState) for \(request.requestedAction)",
+            payloadSummary: "approvedScope=\(response.approvedScope.joined(separator: ",")) deniedActions=\(response.deniedActions.joined(separator: ","))",
+            payloadHash: hash(response.requestRef + response.approvalState + response.approvedScope.joined()),
+            approvalRefs: [response.requestRef],
+            attributes: [
+                "approvalRequest.riskTier": request.riskTier,
+                "approvalRequest.requestedAction": request.requestedAction,
+                "approvalRequest.scope": request.scope,
+                "approvalRequest.approvalState": response.approvalState
+            ]
+        ).build()
+        try await emit(event)
+        return event
+    }
+
     /// Emit `capability.invoked` for a capability packet.
     @discardableResult
     public func capabilityInvoked(_ packet: CapabilityPacket, parentEventId: String? = nil, traceId: String) async throws -> TraceEvent {
@@ -199,25 +256,76 @@ public actor TraceEventEmitter: Sendable {
         return event
     }
 
+    /// Emit `trace.error` for pipeline or audit failures.
+    @discardableResult
+    public func traceError(
+        message: String,
+        subjectRef: String,
+        parentEventId: String? = nil,
+        traceId: String
+    ) async throws -> TraceEvent {
+        let event = TraceEventBuilder(
+            eventType: .traceError,
+            traceId: traceId,
+            parentEventId: parentEventId,
+            subjectRef: subjectRef,
+            status: "error",
+            outcome: "trace or pipeline error",
+            payloadSummary: String(message.prefix(200)),
+            payloadHash: hash(message),
+            attributes: [
+                "error.message": message
+            ]
+        ).build()
+        try await emit(event)
+        return event
+    }
+
+
+
+    /// IDs of key events emitted by `tracePipeline`.
+    public struct TracePipelineResult: Sendable {
+        public var traceId: String
+        public var intentEventId: String
+        public var taskFramedEventId: String
+        public var planProducedEventId: String
+        public var primaryRouteEventId: String
+
+        public init(
+            traceId: String,
+            intentEventId: String,
+            taskFramedEventId: String,
+            planProducedEventId: String,
+            primaryRouteEventId: String
+        ) {
+            self.traceId = traceId
+            self.intentEventId = intentEventId
+            self.taskFramedEventId = taskFramedEventId
+            self.planProducedEventId = planProducedEventId
+            self.primaryRouteEventId = primaryRouteEventId
+        }
+    }
+
     /// Convenience: run the full Intent -> TaskFrame -> CapabilityPlan
     /// pipeline and emit the corresponding trace events.
     ///
-    /// Returns the trace id used so callers can correlate downstream events.
+    /// Returns the trace id and key event ids so callers can correlate
+    /// downstream events such as approval resolution and capability invocation.
     public func tracePipeline(
         intent: Intent,
         frame: TaskFrame,
         plan: CapabilityPlan,
         packet: CapabilityPacket? = nil
-    ) async throws -> String {
+    ) async throws -> TracePipelineResult {
         let traceId = newTraceId()
 
         let intentEvent = try await intentReceived(intent, traceId: traceId)
-        let frameEvent = try await taskFramed(frame, parentEventId: intentEvent.traceId, traceId: traceId)
-        let planEvent = try await planProduced(plan, parentEventId: frameEvent.traceId, traceId: traceId)
+        let frameEvent = try await taskFramed(frame, parentEventId: intentEvent.eventId, traceId: traceId)
+        let planEvent = try await planProduced(plan, parentEventId: frameEvent.eventId, traceId: traceId)
         let primaryEvent = try await routeSelected(
             plan.primaryRoute,
             isFallback: false,
-            parentEventId: planEvent.traceId,
+            parentEventId: planEvent.eventId,
             traceId: traceId
         )
 
@@ -225,23 +333,29 @@ public actor TraceEventEmitter: Sendable {
             _ = try await routeSelected(
                 fallback,
                 isFallback: true,
-                parentEventId: planEvent.traceId,
+                parentEventId: planEvent.eventId,
                 traceId: traceId,
                 attributes: ["fallbackIndex": String(index)]
             )
         }
 
         if let packet {
-            let invokedEvent = try await capabilityInvoked(packet, parentEventId: primaryEvent.traceId, traceId: traceId)
+            let invokedEvent = try await capabilityInvoked(packet, parentEventId: primaryEvent.eventId, traceId: traceId)
             _ = try await capabilityCompleted(
                 capability: packet.selectedCapability ?? packet.mode,
                 outcome: "success",
-                parentEventId: invokedEvent.traceId,
+                parentEventId: invokedEvent.eventId,
                 traceId: traceId
             )
         }
 
-        return traceId
+        return TracePipelineResult(
+            traceId: traceId,
+            intentEventId: intentEvent.eventId,
+            taskFramedEventId: frameEvent.eventId,
+            planProducedEventId: planEvent.eventId,
+            primaryRouteEventId: primaryEvent.eventId
+        )
     }
 
     // MARK: - Helpers
@@ -252,8 +366,7 @@ public actor TraceEventEmitter: Sendable {
     }
 
     private func hash(_ value: String) -> String {
-        // Stable, non-cryptographic hash for test determinism.
-        let data = Data(value.utf8)
-        return "sha256:\(data.base64EncodedString())"
+        let digest = SHA256.hash(data: Data(value.utf8))
+        return "sha256:\(digest.compactMap { String(format: "%02x", $0) }.joined())"
     }
 }
