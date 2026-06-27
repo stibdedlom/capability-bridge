@@ -54,6 +54,10 @@ public struct DefaultCapabilityPlanner: CapabilityPlanner {
 
     private let rules: [RoutingRule]
 
+    public init() {
+        self.rules = DefaultCapabilityPlanner.defaultRules
+    }
+
     init(rules: [RoutingRule]? = nil) {
         self.rules = rules ?? DefaultCapabilityPlanner.defaultRules
     }
