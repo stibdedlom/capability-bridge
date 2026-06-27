@@ -30,6 +30,8 @@ public actor CogIntentAdapter {
 
     /// V0 stub: approval responses do not produce a capability packet in
     /// observe/advise mode.
+    /// TODO(bridge-v1): generate a capability packet when the scope supports
+    /// autonomous execution.
     public func adapt(response: CogApprovalResponse) -> SdlCapabilityPacket? {
         nil
     }
@@ -37,33 +39,6 @@ public actor CogIntentAdapter {
     // MARK: - Risk Classification
 
     private func riskTier(for intent: CogIntent) -> RiskTier {
-        switch intent.sourceIntent.action {
-        case .readOutput,
-             .statusBrief,
-             .takeNote,
-             .searchNotes,
-             .listRules,
-             .pausePlayback,
-             .resumePlayback:
-            return .safe
-
-        case .switchTab,
-             .groupTabs,
-             .collapseGroup,
-             .expandGroup,
-             .saveSession,
-             .loadSession,
-             .correct,
-             .annotate:
-            return .low
-
-        case .sendInput,
-             .cancel,
-             .requestProactiveBriefing:
-            return .medium
-
-        case .addRule:
-            return .high
-        }
+        intent.sourceIntent.action.riskTier
     }
 }

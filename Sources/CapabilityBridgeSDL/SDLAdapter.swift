@@ -20,6 +20,8 @@ public actor SdlBridgeAdapter: CapabilityBridgeClient {
 
     /// Respond to an approval request. V0 does not execute, so no artifact is
     /// produced.
+    /// TODO(bridge-v1): dispatch the approved plan to the SDL executor and
+    /// return a real artifact summary.
     public func respond(
         to approvalRef: String,
         with response: CogApprovalResponse
@@ -29,7 +31,7 @@ public actor SdlBridgeAdapter: CapabilityBridgeClient {
         return .success(nil)
     }
 
-    /// Emit a trace event into the SDL lifecycle record. V0 logs and discards.
+    /// Emit a trace event into the SDL lifecycle record. V0 stores nothing.
     public func emit(_ event: CogTraceEvent) async -> Result<Void, CogBridgeError> {
         await traceEmitter.emit(event)
         return .success(())

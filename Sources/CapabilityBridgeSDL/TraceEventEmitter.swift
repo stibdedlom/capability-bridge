@@ -3,14 +3,16 @@ import WorkspaceTypes
 
 /// Accepts `CogTraceEvent` values and forwards them to SDL lifecycle records.
 ///
-/// V0 is a no-op implementation that only prints to standard output so tests
-/// and local runs can observe that events reached the emitter.
+/// V0 is a no-op implementation. Trace data is intentionally not written to
+/// standard output or any other sink until a redaction-aware logging policy is
+/// defined.
+/// TODO(bridge-v1): inject a logging protocol and emit redacted traces.
 public actor TraceEventEmitter {
 
     public init() {}
 
-    /// Record the event. V0 does not persist.
+    /// Record the event. V0 does not persist or print.
     public func emit(_ event: CogTraceEvent) {
-        print("[trace] \(event.traceID) \(event.eventType): \(event.outcome)")
+        // Intentionally empty for V0.
     }
 }

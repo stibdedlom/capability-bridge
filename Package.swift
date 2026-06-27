@@ -8,7 +8,10 @@ let workspaceTypesPath = "../../cocogiri/workspace-types-worktree-cog-bridge-1"
 let package = Package(
     name: "capability-bridge",
     platforms: [
-        .macOS(.v26)
+        .macOS(.v26),
+        .iOS(.v26),
+        .tvOS(.v26),
+        .watchOS(.v26)
     ],
     products: [
         .library(name: "CapabilityBridge", targets: ["CapabilityBridge"]),
