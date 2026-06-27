@@ -153,7 +153,7 @@ public struct TraceEventRequirements: Sendable {
 
     private static func fieldValue(_ event: TraceEvent, fieldPath: String) -> String? {
         switch fieldPath {
-        case "eventId": return event.eventId
+        case "eventId": return event.eventID
         case "eventType": return event.eventType
         case "traceId": return event.traceId
         case "subjectRef": return event.subjectRef
@@ -189,10 +189,10 @@ public enum TraceValidationResult: Sendable {
 /// The builder enforces required fields by construction and produces a
 /// `TraceEvent` that can be validated with `TraceEventRequirements`.
 public struct TraceEventBuilder: Sendable {
-    public var eventId: String?
+    public var eventID: String?
     public var eventType: TraceEventKind
     public var traceId: String
-    public var parentEventId: String?
+    public var parentEventID: String?
     public var subjectRef: String
     public var status: String
     public var outcome: String
@@ -203,10 +203,10 @@ public struct TraceEventBuilder: Sendable {
     public var attributes: [String: String]
 
     public init(
-        eventId: String? = nil,
+        eventID: String? = nil,
         eventType: TraceEventKind,
         traceId: String,
-        parentEventId: String? = nil,
+        parentEventID: String? = nil,
         subjectRef: String,
         status: String,
         outcome: String,
@@ -216,10 +216,10 @@ public struct TraceEventBuilder: Sendable {
         approvalRefs: [String] = [],
         attributes: [String: String] = [:]
     ) {
-        self.eventId = eventId
+        self.eventID = eventID
         self.eventType = eventType
         self.traceId = traceId
-        self.parentEventId = parentEventId
+        self.parentEventID = parentEventID
         self.subjectRef = subjectRef
         self.status = status
         self.outcome = outcome
@@ -232,10 +232,10 @@ public struct TraceEventBuilder: Sendable {
 
     public func build() -> TraceEvent {
         TraceEvent(
-            eventId: eventId ?? UUID().uuidString,
+            eventID: eventID ?? UUID().uuidString,
             eventType: eventType.rawValue,
             traceId: traceId,
-            parentEventId: parentEventId,
+            parentEventID: parentEventID,
             subjectRef: subjectRef,
             status: status,
             outcome: outcome,

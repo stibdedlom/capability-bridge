@@ -51,12 +51,12 @@ public struct Route: Sendable {
 /// A `CapabilityPlan` is immutable after construction and is the bridge's
 /// primary output to the SDL orchestration layer.
 public struct CapabilityPlan: Sendable {
-    public var taskFrameRef: String
-    public var primaryRoute: Route
-    public var fallbackRoutes: [Route]
-    public var authorityRequired: [String]
-    public var tracePolicy: String
-    public var estimatedRiskTier: String
+    public let taskFrameRef: String
+    public let primaryRoute: Route
+    public let fallbackRoutes: [Route]
+    public let authorityRequired: [String]
+    public let tracePolicy: String
+    public let estimatedRiskTier: String
 
     public init(
         taskFrameRef: String,

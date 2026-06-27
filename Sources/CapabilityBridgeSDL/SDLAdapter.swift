@@ -8,9 +8,6 @@ public enum SDLAdapterError: Error, Sendable {
 
     /// The plan requires authority that has not been granted.
     case missingAuthority(requirement: String)
-
-    /// The lifecycle record reference is malformed or missing.
-    case invalidLifecycleRecordRef(String)
 }
 
 /// Adapts a `CapabilityPlan` into the SDL-facing `CapabilityPacket` and
@@ -112,7 +109,7 @@ public struct SDLAdapter: Sendable {
         plan: CapabilityPlan? = nil
     ) -> (ref: String, bundle: ContextBundle) {
         let ref = "context-bundle:\(frame.taskRef)"
-        var aurRefs: [String] = []
+        var auraRefs: [String] = []
         var omissions: [String] = []
 
         if plan == nil {
@@ -124,7 +121,7 @@ public struct SDLAdapter: Sendable {
         }
 
         if let repo = frame.repoContext, !repo.isEmpty {
-            aurRefs.append("aur://repo/\(repo)")
+            auraRefs.append("aur://repo/\(repo)")
         }
 
         let bundle = ContextBundle(
@@ -132,7 +129,7 @@ public struct SDLAdapter: Sendable {
             noteRefs: [],
             memorySnippets: [],
             artifactRefs: [],
-            aurRefs: aurRefs,
+            auraRefs: auraRefs,
             omissions: omissions,
             freshness: Date(),
             tokenBudget: 4096,

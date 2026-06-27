@@ -3,3 +3,5 @@
 *.xcworkspace
 .DS_Store
 .workflow/
+registry/
+telemetry/

@@ -5,9 +5,6 @@ import ApprovalSurfaces
 
 /// Errors thrown while handling COG intents through the bridge.
 public enum COGAdapterError: Error, Sendable {
-    /// The planner produced a plan but no route could be selected.
-    case noRouteSelected(taskFrameRef: String)
-
     /// The SDL adapter could not translate the plan.
     case adaptationFailed(underlying: Error)
 
@@ -77,7 +74,7 @@ public actor COGAdapter {
             plan: plan,
             frame: frame,
             traceId: pipelineResult.traceId,
-            parentEventId: pipelineResult.planProducedEventId
+            parentEventID: pipelineResult.planProducedEventID
         )
 
         let (contextBundleRef, contextBundle) = sdlAdapter.assembleContextBundle(for: frame, plan: plan)
@@ -94,13 +91,13 @@ public actor COGAdapter {
             do {
                 let invokedEvent = try await traceEmitter.capabilityInvoked(
                     packet,
-                    parentEventId: pipelineResult.primaryRouteEventId,
+                    parentEventID: pipelineResult.primaryRouteEventID,
                     traceId: pipelineResult.traceId
                 )
                 _ = try await traceEmitter.capabilityCompleted(
                     capability: packet.selectedCapability ?? packet.mode,
                     outcome: "success",
-                    parentEventId: invokedEvent.eventId,
+                    parentEventID: invokedEvent.eventID,
                     traceId: pipelineResult.traceId
                 )
             } catch {
@@ -127,7 +124,7 @@ public actor COGAdapter {
         plan: CapabilityPlan,
         frame: TaskFrame,
         traceId: String,
-        parentEventId: String?
+        parentEventID: String?
     ) async throws -> (ApprovalRequest, BridgeApprovalResponse)? {
         guard plan.authorityRequired.contains("approval-gate") else { return nil }
 
@@ -136,7 +133,7 @@ public actor COGAdapter {
         }
 
         let request = makeApprovalRequest(for: plan, frame: frame)
-        let requestedEvent = try await traceEmitter.approvalRequested(request, parentEventId: parentEventId, traceId: traceId)
+        let requestedEvent = try await traceEmitter.approvalRequested(request, parentEventID: parentEventID, traceId: traceId)
 
         let response: BridgeApprovalResponse
         do {
@@ -145,7 +142,7 @@ public actor COGAdapter {
             _ = try? await traceEmitter.traceError(
                 message: "Approval surface failed: \(error)",
                 subjectRef: request.scope,
-                parentEventId: requestedEvent.eventId,
+                parentEventID: requestedEvent.eventID,
                 traceId: traceId
             )
             throw COGAdapterError.approvalDenied(requestRef: "surface-failure")
@@ -154,7 +151,7 @@ public actor COGAdapter {
         _ = try await traceEmitter.approvalResolved(
             request: request,
             response: response,
-            parentEventId: requestedEvent.eventId,
+            parentEventID: requestedEvent.eventID,
             traceId: traceId
         )
 

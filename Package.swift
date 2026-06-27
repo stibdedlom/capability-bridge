@@ -21,6 +21,6 @@ let package = Package(
         .target(name: "PaneBackends", dependencies: ["CapabilityBridge"]),
         .target(name: "ApprovalSurfaces", dependencies: ["CapabilityBridge"]),
         .target(name: "ModelRouting", dependencies: ["CapabilityBridge"]),
-        .testTarget(name: "CapabilityBridgeTests", dependencies: ["CapabilityBridge", "CapabilityBridgeSDL", "CapabilityBridgeCOG"]),
+        .testTarget(name: "CapabilityBridgeTests", dependencies: ["CapabilityBridge", "CapabilityBridgeSDL", "CapabilityBridgeCOG", "ApprovalSurfaces"]),
     ]
 )

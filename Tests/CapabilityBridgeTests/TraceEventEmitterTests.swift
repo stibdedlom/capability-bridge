@@ -140,16 +140,18 @@ struct TraceEventEmitterTests {
         let result = try await emitter.tracePipeline(intent: intent, frame: frame, plan: plan)
         let events = await sink.events
 
-        var eventIds: Set<String> = []
+        var eventIDs: Set<String> = []
         for event in events {
-            #expect(event.eventId.isEmpty == false)
-            #expect(eventIds.insert(event.eventId).inserted)
+            #expect(event.eventID.isEmpty == false)
+            #expect(eventIDs.insert(event.eventID).inserted)
         }
 
-        let intentEvent = events.first { $0.eventType == TraceEventKind.intentReceived.rawValue }!
-        let frameEvent = events.first { $0.eventType == TraceEventKind.taskFramed.rawValue }!
-        #expect(frameEvent.parentEventId == intentEvent.eventId)
-        #expect(result.intentEventId == intentEvent.eventId)
+        let intentEvent = events.first { $0.eventType == TraceEventKind.intentReceived.rawValue }
+        let frameEvent = events.first { $0.eventType == TraceEventKind.taskFramed.rawValue }
+        #expect(intentEvent != nil)
+        #expect(frameEvent != nil)
+        #expect(frameEvent?.parentEventID == intentEvent?.eventID)
+        #expect(result.intentEventID == intentEvent?.eventID)
     }
 
     @Test("payloadHash is a real SHA-256 hex digest")
@@ -160,10 +162,13 @@ struct TraceEventEmitterTests {
 
         _ = try await emitter.intentReceived(intent)
 
-        let event = await sink.events.first!
-        #expect(event.payloadHash.hasPrefix("sha256:"))
-        let hex = String(event.payloadHash.dropFirst(7))
-        #expect(hex.count == 64)
-        #expect(hex.allSatisfy { $0.isHexDigit })
+        let event = await sink.events.first
+        #expect(event != nil)
+        #expect(event?.payloadHash.hasPrefix("sha256:") == true)
+        if let event {
+            let hex = String(event.payloadHash.dropFirst(7))
+            #expect(hex.count == 64)
+            #expect(hex.allSatisfy { $0.isHexDigit })
+        }
     }
 }

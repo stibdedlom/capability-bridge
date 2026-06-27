@@ -54,7 +54,7 @@ public struct ContextBundle: Sendable {
     public var noteRefs: [String]
     public var memorySnippets: [String]
     public var artifactRefs: [String]
-    public var aurRefs: [String]
+    public var auraRefs: [String]
     public var omissions: [String]
     public var freshness: Date
     public var tokenBudget: Int
@@ -65,7 +65,7 @@ public struct ContextBundle: Sendable {
         noteRefs: [String] = [],
         memorySnippets: [String] = [],
         artifactRefs: [String] = [],
-        aurRefs: [String] = [],
+        auraRefs: [String] = [],
         omissions: [String] = [],
         freshness: Date = Date(),
         tokenBudget: Int = 4096,
@@ -75,7 +75,7 @@ public struct ContextBundle: Sendable {
         self.noteRefs = noteRefs
         self.memorySnippets = memorySnippets
         self.artifactRefs = artifactRefs
-        self.aurRefs = aurRefs
+        self.auraRefs = auraRefs
         self.omissions = omissions
         self.freshness = freshness
         self.tokenBudget = tokenBudget
@@ -149,10 +149,10 @@ public struct ApprovalRequest: Sendable {
 
 /// An append-only correlation record.
 public struct TraceEvent: Sendable {
-    public var eventId: String
+    public var eventID: String
     public var eventType: String
     public var traceId: String
-    public var parentEventId: String?
+    public var parentEventID: String?
     public var subjectRef: String
     public var status: String
     public var outcome: String
@@ -163,10 +163,10 @@ public struct TraceEvent: Sendable {
     public var attributes: [String: String]
 
     public init(
-        eventId: String,
+        eventID: String,
         eventType: String,
         traceId: String,
-        parentEventId: String? = nil,
+        parentEventID: String? = nil,
         subjectRef: String,
         status: String,
         outcome: String,
@@ -176,10 +176,10 @@ public struct TraceEvent: Sendable {
         approvalRefs: [String] = [],
         attributes: [String: String] = [:]
     ) {
-        self.eventId = eventId
+        self.eventID = eventID
         self.eventType = eventType
         self.traceId = traceId
-        self.parentEventId = parentEventId
+        self.parentEventID = parentEventID
         self.subjectRef = subjectRef
         self.status = status
         self.outcome = outcome

@@ -153,7 +153,7 @@ struct TraceEventRequirementTests {
     @Test("Missing required field fails validation")
     func missingField() async throws {
         let event = TraceEvent(
-            eventId: "event-1",
+            eventID: "event-1",
             eventType: TraceEventKind.taskFramed.rawValue,
             traceId: "trace-1",
             subjectRef: "task-1",
@@ -181,7 +181,7 @@ struct TraceEventRequirementTests {
         ).build()
 
         let mutated = TraceEvent(
-            eventId: event.eventId,
+            eventID: event.eventID,
             eventType: "unknown.kind",
             traceId: event.traceId,
             subjectRef: event.subjectRef,

@@ -80,11 +80,11 @@ public actor TraceEventEmitter: Sendable {
 
     /// Emit `task.framed` for the given task frame.
     @discardableResult
-    public func taskFramed(_ frame: TaskFrame, parentEventId: String? = nil, traceId: String) async throws -> TraceEvent {
+    public func taskFramed(_ frame: TaskFrame, parentEventID: String? = nil, traceId: String) async throws -> TraceEvent {
         let event = TraceEventBuilder(
             eventType: .taskFramed,
             traceId: traceId,
-            parentEventId: parentEventId,
+            parentEventID: parentEventID,
             subjectRef: frame.taskRef,
             status: "ok",
             outcome: "task framed",
@@ -102,11 +102,11 @@ public actor TraceEventEmitter: Sendable {
 
     /// Emit `plan.produced` for the given capability plan.
     @discardableResult
-    public func planProduced(_ plan: CapabilityPlan, parentEventId: String? = nil, traceId: String) async throws -> TraceEvent {
+    public func planProduced(_ plan: CapabilityPlan, parentEventID: String? = nil, traceId: String) async throws -> TraceEvent {
         let event = TraceEventBuilder(
             eventType: .planProduced,
             traceId: traceId,
-            parentEventId: parentEventId,
+            parentEventID: parentEventID,
             subjectRef: plan.taskFrameRef,
             status: "ok",
             outcome: "plan produced with \(plan.allRoutes.count) route(s)",
@@ -128,7 +128,7 @@ public actor TraceEventEmitter: Sendable {
     public func routeSelected(
         _ route: Route,
         isFallback: Bool,
-        parentEventId: String? = nil,
+        parentEventID: String? = nil,
         traceId: String,
         attributes: [String: String] = [:]
     ) async throws -> TraceEvent {
@@ -139,7 +139,7 @@ public actor TraceEventEmitter: Sendable {
         let event = TraceEventBuilder(
             eventType: .routeSelected,
             traceId: traceId,
-            parentEventId: parentEventId,
+            parentEventID: parentEventID,
             subjectRef: route.capability,
             status: "ok",
             outcome: isFallback ? "fallback route selected" : "primary route selected",
@@ -155,13 +155,13 @@ public actor TraceEventEmitter: Sendable {
     @discardableResult
     public func approvalRequested(
         _ request: ApprovalRequest,
-        parentEventId: String? = nil,
+        parentEventID: String? = nil,
         traceId: String
     ) async throws -> TraceEvent {
         let event = TraceEventBuilder(
             eventType: .approvalRequested,
             traceId: traceId,
-            parentEventId: parentEventId,
+            parentEventID: parentEventID,
             subjectRef: request.scope,
             status: "pending",
             outcome: "approval requested for \(request.requestedAction)",
@@ -183,13 +183,13 @@ public actor TraceEventEmitter: Sendable {
     public func approvalResolved(
         request: ApprovalRequest,
         response: BridgeApprovalResponse,
-        parentEventId: String? = nil,
+        parentEventID: String? = nil,
         traceId: String
     ) async throws -> TraceEvent {
         let event = TraceEventBuilder(
             eventType: .approvalResolved,
             traceId: traceId,
-            parentEventId: parentEventId,
+            parentEventID: parentEventID,
             subjectRef: response.requestRef,
             status: response.isApproved ? "approved" : "denied",
             outcome: "approval \(response.approvalState) for \(request.requestedAction)",
@@ -209,11 +209,11 @@ public actor TraceEventEmitter: Sendable {
 
     /// Emit `capability.invoked` for a capability packet.
     @discardableResult
-    public func capabilityInvoked(_ packet: CapabilityPacket, parentEventId: String? = nil, traceId: String) async throws -> TraceEvent {
+    public func capabilityInvoked(_ packet: CapabilityPacket, parentEventID: String? = nil, traceId: String) async throws -> TraceEvent {
         let event = TraceEventBuilder(
             eventType: .capabilityInvoked,
             traceId: traceId,
-            parentEventId: parentEventId,
+            parentEventID: parentEventID,
             subjectRef: packet.selectedCapability ?? packet.mode,
             status: "ok",
             outcome: "capability invoked in \(packet.invocationMode) mode",
@@ -237,13 +237,13 @@ public actor TraceEventEmitter: Sendable {
         outcome: String,
         artifactRefs: [String] = [],
         approvalRefs: [String] = [],
-        parentEventId: String? = nil,
+        parentEventID: String? = nil,
         traceId: String
     ) async throws -> TraceEvent {
         let event = TraceEventBuilder(
             eventType: .capabilityCompleted,
             traceId: traceId,
-            parentEventId: parentEventId,
+            parentEventID: parentEventID,
             subjectRef: capability,
             status: outcome == "success" ? "ok" : "error",
             outcome: outcome,
@@ -261,13 +261,13 @@ public actor TraceEventEmitter: Sendable {
     public func traceError(
         message: String,
         subjectRef: String,
-        parentEventId: String? = nil,
+        parentEventID: String? = nil,
         traceId: String
     ) async throws -> TraceEvent {
         let event = TraceEventBuilder(
             eventType: .traceError,
             traceId: traceId,
-            parentEventId: parentEventId,
+            parentEventID: parentEventID,
             subjectRef: subjectRef,
             status: "error",
             outcome: "trace or pipeline error",
@@ -286,23 +286,23 @@ public actor TraceEventEmitter: Sendable {
     /// IDs of key events emitted by `tracePipeline`.
     public struct TracePipelineResult: Sendable {
         public var traceId: String
-        public var intentEventId: String
-        public var taskFramedEventId: String
-        public var planProducedEventId: String
-        public var primaryRouteEventId: String
+        public var intentEventID: String
+        public var taskFramedEventID: String
+        public var planProducedEventID: String
+        public var primaryRouteEventID: String
 
         public init(
             traceId: String,
-            intentEventId: String,
-            taskFramedEventId: String,
-            planProducedEventId: String,
-            primaryRouteEventId: String
+            intentEventID: String,
+            taskFramedEventID: String,
+            planProducedEventID: String,
+            primaryRouteEventID: String
         ) {
             self.traceId = traceId
-            self.intentEventId = intentEventId
-            self.taskFramedEventId = taskFramedEventId
-            self.planProducedEventId = planProducedEventId
-            self.primaryRouteEventId = primaryRouteEventId
+            self.intentEventID = intentEventID
+            self.taskFramedEventID = taskFramedEventID
+            self.planProducedEventID = planProducedEventID
+            self.primaryRouteEventID = primaryRouteEventID
         }
     }
 
@@ -320,12 +320,12 @@ public actor TraceEventEmitter: Sendable {
         let traceId = newTraceId()
 
         let intentEvent = try await intentReceived(intent, traceId: traceId)
-        let frameEvent = try await taskFramed(frame, parentEventId: intentEvent.eventId, traceId: traceId)
-        let planEvent = try await planProduced(plan, parentEventId: frameEvent.eventId, traceId: traceId)
+        let frameEvent = try await taskFramed(frame, parentEventID: intentEvent.eventID, traceId: traceId)
+        let planEvent = try await planProduced(plan, parentEventID: frameEvent.eventID, traceId: traceId)
         let primaryEvent = try await routeSelected(
             plan.primaryRoute,
             isFallback: false,
-            parentEventId: planEvent.eventId,
+            parentEventID: planEvent.eventID,
             traceId: traceId
         )
 
@@ -333,28 +333,28 @@ public actor TraceEventEmitter: Sendable {
             _ = try await routeSelected(
                 fallback,
                 isFallback: true,
-                parentEventId: planEvent.eventId,
+                parentEventID: planEvent.eventID,
                 traceId: traceId,
                 attributes: ["fallbackIndex": String(index)]
             )
         }
 
         if let packet {
-            let invokedEvent = try await capabilityInvoked(packet, parentEventId: primaryEvent.eventId, traceId: traceId)
+            let invokedEvent = try await capabilityInvoked(packet, parentEventID: primaryEvent.eventID, traceId: traceId)
             _ = try await capabilityCompleted(
                 capability: packet.selectedCapability ?? packet.mode,
                 outcome: "success",
-                parentEventId: invokedEvent.eventId,
+                parentEventID: invokedEvent.eventID,
                 traceId: traceId
             )
         }
 
         return TracePipelineResult(
             traceId: traceId,
-            intentEventId: intentEvent.eventId,
-            taskFramedEventId: frameEvent.eventId,
-            planProducedEventId: planEvent.eventId,
-            primaryRouteEventId: primaryEvent.eventId
+            intentEventID: intentEvent.eventID,
+            taskFramedEventID: frameEvent.eventID,
+            planProducedEventID: planEvent.eventID,
+            primaryRouteEventID: primaryEvent.eventID
         )
     }
 
