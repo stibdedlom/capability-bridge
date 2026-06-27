@@ -1,0 +1,27 @@
+{
+  "schema_version": "1.2.0",
+  "id": "0c62d626-4500-4df3-9d44-1ef90e423873",
+  "task_ref": "cog-bridge-contract-alignment",
+  "branch": "feature/cog-bridge-contract-alignment",
+  "actor": "v-i-s-h-a-l",
+  "revision": 1,
+  "created_event": "manual",
+  "classification": "execution",
+  "tier": 2,
+  "preflight": {
+    "touched_paths": [
+      ".workflow/.control-plane"
+    ],
+    "required_reviewers": [
+      "BASE",
+      "APEX"
+    ],
+    "adr_required": true,
+    "flags": []
+  },
+  "status": "open",
+  "links": {
+    "role": "capability-workflow-router"
+  },
+  "audit_hash": "e6bbc5cf08891b5426d5f6eb41c408d614068fccf913e0dd8f1ea2b9da2e55d8"
+}
