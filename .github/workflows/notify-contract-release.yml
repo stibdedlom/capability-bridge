@@ -1,0 +1,23 @@
+name: Notify Contract Release
+
+on:
+  push:
+    tags:
+      - '*'
+  release:
+    types: [published]
+  workflow_dispatch:
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Dispatch contract release event
+        env:
+          DISPATCH_TOKEN: ${{ secrets.CROSS_REPO_DISPATCH_TOKEN || secrets.GITHUB_TOKEN }}
+        run: |
+          curl -X POST \
+            -H "Authorization: token $DISPATCH_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            -d '{"event_type": "contract-released", "client_payload": {"repository": "'${{ github.repository }}'", "tag": "'${{ github.ref_name }}'", "sha": "'${{ github.sha }}'"}}' \
+            https://api.github.com/repos/cocogiri/cocogiri-meta/dispatches
