@@ -7,19 +7,62 @@
 
 import Foundation
 
+// MARK: - Enumerated schema fields
+
+/// Estimated risk tier of a task or requested action.
+public enum RiskTier: String, Sendable, Codable, CaseIterable {
+    case low = "low"
+    case medium = "medium"
+    case high = "high"
+    case critical = "critical"
+}
+
+/// Requested autonomy level for a task.
+public enum AutonomyMode: String, Sendable, Codable, CaseIterable {
+    case advise = "advise"
+    case plan = "plan"
+    case execute = "execute"
+}
+
+/// Lifecycle status of a task frame.
+public enum TaskFrameStatus: String, Sendable, Codable, CaseIterable {
+    case new = "new"
+    case framed = "framed"
+    case planned = "planned"
+    case approved = "approved"
+    case running = "running"
+    case completed = "completed"
+    case failed = "failed"
+    case cancelled = "cancelled"
+}
+
+/// Current state of an approval request or response.
+public enum ApprovalState: String, Sendable, Codable, CaseIterable {
+    case pending = "pending"
+    case approved = "approved"
+    case denied = "denied"
+    case expired = "expired"
+}
+
+/// Whether a capability invocation should actually mutate state.
+public enum InvocationMode: String, Sendable, Codable, CaseIterable {
+    case dryRun = "dry-run"
+    case execute = "execute"
+}
+
 /// A scoped, routeable unit of work produced from a COG Intent.
-public struct TaskFrame: Sendable {
-    public var taskRef: String
-    public var userGoal: String
-    public var sourceIntent: String
-    public var workspaceTarget: String?
-    public var repoContext: String?
-    public var riskTier: String
-    public var autonomyMode: String
-    public var requestedOutcome: String
-    public var constraints: [String]
-    public var status: String
-    public var openQuestions: [String]
+public struct TaskFrame: Sendable, Codable, Equatable {
+    public let taskRef: String
+    public let userGoal: String
+    public let sourceIntent: String
+    public let workspaceTarget: String?
+    public let repoContext: String?
+    public let riskTier: RiskTier
+    public let autonomyMode: AutonomyMode
+    public let requestedOutcome: String
+    public let constraints: [String]
+    public let status: TaskFrameStatus
+    public let openQuestions: [String]
 
     public init(
         taskRef: String,
@@ -27,11 +70,11 @@ public struct TaskFrame: Sendable {
         sourceIntent: String,
         workspaceTarget: String? = nil,
         repoContext: String? = nil,
-        riskTier: String = "low",
-        autonomyMode: String = "advise",
+        riskTier: RiskTier = .low,
+        autonomyMode: AutonomyMode = .advise,
         requestedOutcome: String = "",
         constraints: [String] = [],
-        status: String = "new",
+        status: TaskFrameStatus = .new,
         openQuestions: [String] = []
     ) {
         self.taskRef = taskRef
@@ -46,19 +89,33 @@ public struct TaskFrame: Sendable {
         self.status = status
         self.openQuestions = openQuestions
     }
+
+    enum CodingKeys: String, CodingKey {
+        case taskRef
+        case userGoal
+        case sourceIntent
+        case workspaceTarget
+        case repoContext
+        case riskTier
+        case autonomyMode
+        case requestedOutcome
+        case constraints
+        case status
+        case openQuestions
+    }
 }
 
 /// A bounded context package with provenance.
-public struct ContextBundle: Sendable {
-    public var workspaceSnapshot: String?
-    public var noteRefs: [String]
-    public var memorySnippets: [String]
-    public var artifactRefs: [String]
-    public var auraRefs: [String]
-    public var omissions: [String]
-    public var freshness: Date
-    public var tokenBudget: Int
-    public var rawContentPolicy: String
+public struct ContextBundle: Sendable, Codable, Equatable {
+    public let workspaceSnapshot: String?
+    public let noteRefs: [String]
+    public let memorySnippets: [String]
+    public let artifactRefs: [String]
+    public let auraRefs: [String]
+    public let omissions: [String]
+    public let freshness: Date
+    public let tokenBudget: Int
+    public let rawContentPolicy: String
 
     public init(
         workspaceSnapshot: String? = nil,
@@ -81,23 +138,35 @@ public struct ContextBundle: Sendable {
         self.tokenBudget = tokenBudget
         self.rawContentPolicy = rawContentPolicy
     }
+
+    enum CodingKeys: String, CodingKey {
+        case workspaceSnapshot
+        case noteRefs
+        case memorySnippets
+        case artifactRefs
+        case auraRefs = "aurRefs"
+        case omissions
+        case freshness
+        case tokenBudget
+        case rawContentPolicy
+    }
 }
 
 /// A request from the bridge to the SDL capability layer.
-public struct CapabilityPacket: Sendable {
-    public var mode: String
-    public var selectedCapability: String?
-    public var invocationMode: String
-    public var inputs: [String: String]
-    public var contextBundleRef: String
-    public var authorityScope: [String]
-    public var allowMutation: Bool
-    public var expectedOutputs: [String]
+public struct CapabilityPacket: Sendable, Codable, Equatable {
+    public let mode: String
+    public let selectedCapability: String?
+    public let invocationMode: InvocationMode
+    public let inputs: [String: String]
+    public let contextBundleRef: String
+    public let authorityScope: [String]
+    public let allowMutation: Bool
+    public let expectedOutputs: [String]
 
     public init(
         mode: String,
         selectedCapability: String? = nil,
-        invocationMode: String = "dry-run",
+        invocationMode: InvocationMode = .dryRun,
         inputs: [String: String] = [:],
         contextBundleRef: String,
         authorityScope: [String] = [],
@@ -113,28 +182,39 @@ public struct CapabilityPacket: Sendable {
         self.allowMutation = allowMutation
         self.expectedOutputs = expectedOutputs
     }
+
+    enum CodingKeys: String, CodingKey {
+        case mode
+        case selectedCapability
+        case invocationMode
+        case inputs
+        case contextBundleRef
+        case authorityScope
+        case allowMutation
+        case expectedOutputs
+    }
 }
 
 /// A human decision envelope for risky actions.
-public struct ApprovalRequest: Sendable {
-    public var riskTier: String
-    public var requestedAction: String
-    public var evidenceRefs: [String]
-    public var scope: String
-    public var expiresAt: Date?
-    public var prohibitedActions: [String]
-    public var confirmationRitual: String
-    public var approvalState: String
+public struct ApprovalRequest: Sendable, Codable, Equatable {
+    public let riskTier: RiskTier
+    public let requestedAction: String
+    public let evidenceRefs: [String]
+    public let scope: String
+    public let expiresAt: Date?
+    public let prohibitedActions: [String]
+    public let confirmationRitual: String
+    public let approvalState: ApprovalState
 
     public init(
-        riskTier: String,
+        riskTier: RiskTier,
         requestedAction: String,
         evidenceRefs: [String] = [],
         scope: String,
         expiresAt: Date? = nil,
         prohibitedActions: [String] = [],
         confirmationRitual: String = "tap-approve",
-        approvalState: String = "pending"
+        approvalState: ApprovalState = .pending
     ) {
         self.riskTier = riskTier
         self.requestedAction = requestedAction
@@ -145,22 +225,33 @@ public struct ApprovalRequest: Sendable {
         self.confirmationRitual = confirmationRitual
         self.approvalState = approvalState
     }
+
+    enum CodingKeys: String, CodingKey {
+        case riskTier
+        case requestedAction
+        case evidenceRefs
+        case scope
+        case expiresAt
+        case prohibitedActions
+        case confirmationRitual
+        case approvalState
+    }
 }
 
 /// An append-only correlation record.
-public struct TraceEvent: Sendable {
-    public var eventID: String
-    public var eventType: String
-    public var traceId: String
-    public var parentEventID: String?
-    public var subjectRef: String
-    public var status: String
-    public var outcome: String
-    public var payloadSummary: String
-    public var payloadHash: String
-    public var artifactRefs: [String]
-    public var approvalRefs: [String]
-    public var attributes: [String: String]
+public struct TraceEvent: Sendable, Codable, Equatable {
+    public let eventID: String
+    public let eventType: String
+    public let traceId: String
+    public let parentEventID: String?
+    public let subjectRef: String
+    public let status: String
+    public let outcome: String
+    public let payloadSummary: String
+    public let payloadHash: String
+    public let artifactRefs: [String]
+    public let approvalRefs: [String]
+    public let attributes: [String: String]
 
     public init(
         eventID: String,
@@ -189,19 +280,34 @@ public struct TraceEvent: Sendable {
         self.approvalRefs = approvalRefs
         self.attributes = attributes
     }
+
+    enum CodingKeys: String, CodingKey {
+        case eventID = "eventId"
+        case eventType
+        case traceId
+        case parentEventID = "parentEventId"
+        case subjectRef
+        case status
+        case outcome
+        case payloadSummary
+        case payloadHash
+        case artifactRefs
+        case approvalRefs
+        case attributes
+    }
 }
 
 /// A compact result for user display and deeper linking.
-public struct ArtifactSummary: Sendable {
-    public var artifactRef: String
-    public var artifactType: String
-    public var pathOrURI: String
-    public var fingerprint: String
-    public var producerCapability: String
-    public var title: String
-    public var summary: String
-    public var conformanceSummary: String
-    public var redactionState: String
+public struct ArtifactSummary: Sendable, Codable, Equatable {
+    public let artifactRef: String
+    public let artifactType: String
+    public let pathOrURI: String
+    public let fingerprint: String
+    public let producerCapability: String
+    public let title: String
+    public let summary: String
+    public let conformanceSummary: String
+    public let redactionState: String
 
     public init(
         artifactRef: String,
@@ -223,6 +329,18 @@ public struct ArtifactSummary: Sendable {
         self.summary = summary
         self.conformanceSummary = conformanceSummary
         self.redactionState = redactionState
+    }
+
+    enum CodingKeys: String, CodingKey {
+        case artifactRef
+        case artifactType
+        case pathOrURI
+        case fingerprint
+        case producerCapability
+        case title
+        case summary
+        case conformanceSummary
+        case redactionState
     }
 }
 

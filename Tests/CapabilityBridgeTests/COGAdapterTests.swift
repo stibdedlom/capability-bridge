@@ -56,7 +56,7 @@ struct COGAdapterTests {
             taskRef: "task-3",
             userGoal: "Run the tests",
             sourceIntent: "tap",
-            riskTier: "low"
+            riskTier: .low
         )
 
         let result = try await adapter.handle(frame: frame)

@@ -7,9 +7,9 @@ struct CapabilityBridgeTests {
     @Test("TaskFrame can be constructed with defaults")
     func taskFrameDefaults() async throws {
         let frame = TaskFrame(taskRef: "test-1", userGoal: "Test goal", sourceIntent: "voice")
-        #expect(frame.riskTier == "low")
-        #expect(frame.autonomyMode == "advise")
-        #expect(frame.status == "new")
+        #expect(frame.riskTier == .low)
+        #expect(frame.autonomyMode == .advise)
+        #expect(frame.status == .new)
     }
 
     @Test("CapabilityPacket defaults to no mutation")
@@ -25,11 +25,11 @@ struct CapabilityBridgeTests {
     @Test("ApprovalRequest starts pending")
     func approvalPending() async throws {
         let request = ApprovalRequest(
-            riskTier: "medium",
+            riskTier: .medium,
             requestedAction: "edit README",
             scope: "docs/README.md"
         )
-        #expect(request.approvalState == "pending")
+        #expect(request.approvalState == .pending)
     }
 }
 
@@ -53,7 +53,7 @@ struct RoutingPipelineTests {
         #expect(frame.userGoal == intent.rawText)
         #expect(frame.sourceIntent == "voice")
         #expect(frame.workspaceTarget == "capability-bridge")
-        #expect(frame.status == "framed")
+        #expect(frame.status == .framed)
     }
 
     @Test("Planner produces a high-confidence execution plan for implementation intents")
@@ -67,9 +67,9 @@ struct RoutingPipelineTests {
         let plan = try await planner.plan(intent: intent)
 
         #expect(plan.primaryRoute.capability == "capability-session-orchestrator")
-        #expect(plan.primaryRoute.invocationMode == "execute")
+        #expect(plan.primaryRoute.invocationMode == .execute)
         #expect(plan.confidence == .high)
-        #expect(plan.estimatedRiskTier == "medium")
+        #expect(plan.estimatedRiskTier == .medium)
         #expect(plan.authorityRequired.contains("allow_mutation"))
         #expect(plan.authorityRequired.contains("branch_or_worktree_isolation"))
     }

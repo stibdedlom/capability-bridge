@@ -23,7 +23,7 @@ struct ApprovalSurfaceTests {
         let surface = StubApprovalSurface(
             response: BridgeApprovalResponse(
                 requestRef: "approval-1",
-                approvalState: "approved"
+                approvalState: .approved
             )
         )
         let adapter = makeAdapter(surface: surface)
@@ -32,7 +32,7 @@ struct ApprovalSurfaceTests {
         let result = try await adapter.handle(intent: intent)
 
         #expect(result.status == "ok")
-        #expect(result.capabilityPlan.estimatedRiskTier == "high")
+        #expect(result.capabilityPlan.estimatedRiskTier == .high)
     }
 
     @Test("Denied surface throws approval denied error")
@@ -40,7 +40,7 @@ struct ApprovalSurfaceTests {
         let surface = StubApprovalSurface(
             response: BridgeApprovalResponse(
                 requestRef: "approval-2",
-                approvalState: "denied"
+                approvalState: .denied
             )
         )
         let adapter = makeAdapter(surface: surface)
@@ -76,7 +76,7 @@ struct ApprovalSurfaceTests {
         let sink = InMemoryTraceEventSink()
         let emitter = TraceEventEmitter(sink: sink)
         let surface = StubApprovalSurface(
-            response: BridgeApprovalResponse(requestRef: "approval-trace-1", approvalState: "approved", approvedScope: ["allow_mutation"])
+            response: BridgeApprovalResponse(requestRef: "approval-trace-1", approvalState: .approved, approvedScope: ["allow_mutation"])
         )
         let adapter = COGAdapter(
             planner: DefaultCapabilityPlanner(),
@@ -101,7 +101,7 @@ struct ApprovalSurfaceTests {
         let sink = InMemoryTraceEventSink()
         let emitter = TraceEventEmitter(sink: sink)
         let surface = StubApprovalSurface(
-            response: BridgeApprovalResponse(requestRef: "approval-frame-1", approvalState: "approved", approvedScope: ["allow_mutation"])
+            response: BridgeApprovalResponse(requestRef: "approval-frame-1", approvalState: .approved, approvedScope: ["allow_mutation"])
         )
         let adapter = COGAdapter(
             planner: DefaultCapabilityPlanner(),
@@ -114,7 +114,7 @@ struct ApprovalSurfaceTests {
             taskRef: "task-frame-1",
             userGoal: "Delete the old branch",
             sourceIntent: "tap",
-            riskTier: "high"
+            riskTier: .high
         )
 
         let result = try await adapter.handle(frame: frame)
@@ -125,7 +125,7 @@ struct ApprovalSurfaceTests {
     @Test("Approved scope narrows packet authority")
     func approvedScopeNarrowsAuthority() async throws {
         let surface = StubApprovalSurface(
-            response: BridgeApprovalResponse(requestRef: "approval-narrow-1", approvalState: "approved", approvedScope: ["branch_or_worktree_isolation"])
+            response: BridgeApprovalResponse(requestRef: "approval-narrow-1", approvalState: .approved, approvedScope: ["branch_or_worktree_isolation"])
         )
         let adapter = makeAdapter(surface: surface)
         let intent = Intent(id: "intent-6", source: "voice", rawText: "Delete the old branch")
@@ -138,8 +138,8 @@ struct ApprovalSurfaceTests {
 
     @Test("ApprovalResponse isApproved reflects state")
     func responseState() async throws {
-        let approved = BridgeApprovalResponse(requestRef: "a", approvalState: "approved")
-        let denied = BridgeApprovalResponse(requestRef: "b", approvalState: "denied")
+        let approved = BridgeApprovalResponse(requestRef: "a", approvalState: .approved)
+        let denied = BridgeApprovalResponse(requestRef: "b", approvalState: .denied)
 
         #expect(approved.isApproved == true)
         #expect(denied.isApproved == false)

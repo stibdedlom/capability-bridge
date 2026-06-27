@@ -37,11 +37,11 @@ extension CapabilityPlanner {
 struct RoutingRule: Sendable {
     var keywords: [String]
     var capability: String
-    var invocationMode: String
+    var invocationMode: InvocationMode
     var confidence: RoutingConfidence
     var reason: String
     var authority: [String]
-    var riskTier: String
+    var riskTier: RiskTier
 }
 
 /// Phase 1 default planner.
@@ -73,7 +73,7 @@ public struct DefaultCapabilityPlanner: CapabilityPlanner {
             autonomyMode: deriveAutonomyMode(intent: intent),
             requestedOutcome: intent.metadata["requestedOutcome"] ?? "",
             constraints: [],
-            status: "framed",
+            status: .framed,
             openQuestions: []
         )
     }
@@ -103,11 +103,11 @@ public struct DefaultCapabilityPlanner: CapabilityPlanner {
             primaryRule = RoutingRule(
                 keywords: [],
                 capability: "capability-workflow-router",
-                invocationMode: "dry-run",
+                invocationMode: .dryRun,
                 confidence: .low,
                 reason: "No keyword matched the goal; escalating to workflow router",
                 authority: ["approval-gate"],
-                riskTier: "low"
+                riskTier: .low
             )
         }
 
@@ -136,7 +136,7 @@ public struct DefaultCapabilityPlanner: CapabilityPlanner {
         if primary.confidence != .high && primary.confidence != .certain && fallbacks.isEmpty {
             fallbacks.append(Route(
                 capability: "capability-workflow-router",
-                invocationMode: "dry-run",
+                invocationMode: .dryRun,
                 reason: "Heuristic fallback when no high-confidence route is available",
                 confidence: .medium
             ))
@@ -157,34 +157,34 @@ public struct DefaultCapabilityPlanner: CapabilityPlanner {
 
     // MARK: - Helpers
 
-    private func deriveRiskTier(intent: Intent) -> String {
+    private func deriveRiskTier(intent: Intent) -> RiskTier {
         let text = intent.rawText.lowercased()
         if text.contains("delete") || text.contains("remove") || text.contains("drop") {
-            return "high"
+            return .high
         }
         if text.contains("edit") || text.contains("change") || text.contains("update") {
-            return "medium"
+            return .medium
         }
-        return "low"
+        return .low
     }
 
-    private func deriveAutonomyMode(intent: Intent) -> String {
+    private func deriveAutonomyMode(intent: Intent) -> AutonomyMode {
         let text = intent.rawText.lowercased()
         if text.contains("just do it") || text.contains("go ahead") {
-            return "execute"
+            return .execute
         }
         if text.contains("plan") || text.contains("how should") {
-            return "plan"
+            return .plan
         }
-        return "advise"
+        return .advise
     }
 
     private func deriveAuthority(primary: RoutingRule, frame: TaskFrame) -> [String] {
         var authority = primary.authority
-        if frame.riskTier == "high" || frame.riskTier == "critical" {
+        if frame.riskTier == .high || frame.riskTier == .critical {
             authority.append("approval-gate")
         }
-        if primary.invocationMode == "execute" {
+        if primary.invocationMode == .execute {
             authority.append("allow_mutation")
         }
         return Array(Set(authority)).sorted()
@@ -196,10 +196,9 @@ public struct DefaultCapabilityPlanner: CapabilityPlanner {
         return order[min(ai, bi)]
     }
 
-    private func higherRiskTier(_ a: String, _ b: String) -> String {
-        let order = ["low", "medium", "high", "critical"]
-        let ai = order.firstIndex(of: a) ?? 0
-        let bi = order.firstIndex(of: b) ?? 0
+    private func higherRiskTier(_ a: RiskTier, _ b: RiskTier) -> RiskTier {
+        let order: [RiskTier] = [.low, .medium, .high, .critical]
+        guard let ai = order.firstIndex(of: a), let bi = order.firstIndex(of: b) else { return b }
         return order[max(ai, bi)]
     }
 
@@ -210,47 +209,47 @@ public struct DefaultCapabilityPlanner: CapabilityPlanner {
             RoutingRule(
                 keywords: ["test", "tests", "verify", "swift test"],
                 capability: "capability-session-orchestrator",
-                invocationMode: "execute",
+                invocationMode: .execute,
                 confidence: .high,
                 reason: "Goal explicitly requests running Swift tests in an isolated worktree",
                 authority: ["branch_or_worktree_isolation", "verification_and_rollback_plan"],
-                riskTier: "low"
+                riskTier: .low
             ),
             RoutingRule(
                 keywords: ["implement", "add", "create", "write", "slice"],
                 capability: "capability-session-orchestrator",
-                invocationMode: "execute",
+                invocationMode: .execute,
                 confidence: .high,
                 reason: "Goal requests bounded implementation in an isolated worktree",
                 authority: ["allow_mutation", "allowed_paths", "branch_or_worktree_isolation", "approval_gate", "verification_and_rollback_plan"],
-                riskTier: "medium"
+                riskTier: .medium
             ),
             RoutingRule(
                 keywords: ["review", "check", "audit"],
                 capability: "capability-implementation-reviewer",
-                invocationMode: "dry-run",
+                invocationMode: .dryRun,
                 confidence: .high,
                 reason: "Goal asks for review or audit without mutation",
                 authority: [],
-                riskTier: "low"
+                riskTier: .low
             ),
             RoutingRule(
                 keywords: ["route", "classify", "which capability"],
                 capability: "capability-workflow-router",
-                invocationMode: "dry-run",
+                invocationMode: .dryRun,
                 confidence: .high,
                 reason: "Goal is about routing or capability selection",
                 authority: [],
-                riskTier: "low"
+                riskTier: .low
             ),
             RoutingRule(
                 keywords: ["schema", "contract", "spec"],
                 capability: "capability-schema-governance",
-                invocationMode: "dry-run",
+                invocationMode: .dryRun,
                 confidence: .medium,
                 reason: "Goal touches language-agnostic schemas",
                 authority: ["approval-gate"],
-                riskTier: "low"
+                riskTier: .low
             )
         ]
     }

@@ -4,16 +4,16 @@ import Foundation
 ///
 /// The bridge produces `ApprovalRequest`s; COG surfaces render them and
 /// return this response. The bridge never owns the human-facing surface.
-public struct BridgeApprovalResponse: Sendable {
-    public var requestRef: String
-    public var approvalState: String
-    public var approvedScope: [String]
-    public var deniedActions: [String]
-    public var respondedAt: Date
+public struct BridgeApprovalResponse: Sendable, Codable, Equatable {
+    public let requestRef: String
+    public let approvalState: ApprovalState
+    public let approvedScope: [String]
+    public let deniedActions: [String]
+    public let respondedAt: Date
 
     public init(
         requestRef: String,
-        approvalState: String,
+        approvalState: ApprovalState,
         approvedScope: [String] = [],
         deniedActions: [String] = [],
         respondedAt: Date = Date()
@@ -26,6 +26,14 @@ public struct BridgeApprovalResponse: Sendable {
     }
 
     public var isApproved: Bool {
-        approvalState == "approved"
+        approvalState == .approved
+    }
+
+    enum CodingKeys: String, CodingKey {
+        case requestRef
+        case approvalState
+        case approvedScope
+        case deniedActions
+        case respondedAt
     }
 }

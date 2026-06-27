@@ -11,7 +11,7 @@ struct SDLAdapterTests {
     )
 
     private func makePlan(
-        invocationMode: String = "execute",
+        invocationMode: InvocationMode = .execute,
         authority: [String] = ["allow_mutation"],
         fallbacks: [Route] = []
     ) -> CapabilityPlan {
@@ -26,7 +26,7 @@ struct SDLAdapterTests {
             fallbackRoutes: fallbacks,
             authorityRequired: authority,
             tracePolicy: "emit-all",
-            estimatedRiskTier: "medium"
+            estimatedRiskTier: .medium
         )
     }
 
@@ -39,7 +39,7 @@ struct SDLAdapterTests {
         let packet = try adapter.adapt(plan: plan, contextBundle: bundle, contextBundleRef: "bundle-1")
 
         #expect(packet.selectedCapability == "capability-session-orchestrator")
-        #expect(packet.invocationMode == "execute")
+        #expect(packet.invocationMode == .execute)
         #expect(packet.contextBundleRef == "bundle-1")
         #expect(packet.allowMutation == true)
         #expect(packet.authorityScope.contains("allow_mutation"))
@@ -53,12 +53,11 @@ struct SDLAdapterTests {
             taskFrameRef: "task-2",
             primaryRoute: Route(
                 capability: "capability-workflow-router",
-                invocationMode: "",
                 reason: "Empty mode",
                 confidence: .medium
             ),
             authorityRequired: [],
-            estimatedRiskTier: "low"
+            estimatedRiskTier: .low
         )
 
         let packet = try adapter.adapt(
@@ -67,7 +66,7 @@ struct SDLAdapterTests {
             contextBundleRef: "bundle-2"
         )
 
-        #expect(packet.invocationMode == "dry-run")
+        #expect(packet.invocationMode == .dryRun)
         #expect(packet.allowMutation == false)
     }
 
@@ -102,7 +101,7 @@ struct SDLAdapterTests {
         let plan = CapabilityPlan(
             taskFrameRef: "task-3",
             primaryRoute: Route(capability: "", reason: "Empty", confidence: .none),
-            estimatedRiskTier: "low"
+            estimatedRiskTier: .low
         )
 
         #expect(throws: SDLAdapterError.self) {
@@ -120,7 +119,7 @@ struct SDLAdapterTests {
             taskRef: "task-4",
             userGoal: "Delete production data",
             sourceIntent: "voice",
-            riskTier: "high"
+            riskTier: .high
         )
 
         let (ref, bundle) = adapter.assembleContextBundle(for: frame, plan: nil)

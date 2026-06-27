@@ -6,15 +6,15 @@ import Foundation
 /// where it came from, and enough correlation context to produce a
 /// `TaskFrame`. It intentionally does not contain routing decisions;
 /// those are produced by the planner.
-public struct Intent: Sendable {
-    public var id: String
-    public var source: String
-    public var rawText: String
-    public var locale: String
-    public var timestamp: Date
-    public var deviceRef: String?
-    public var sessionRef: String?
-    public var metadata: [String: String]
+public struct Intent: Sendable, Codable, Equatable {
+    public let id: String
+    public let source: String
+    public let rawText: String
+    public let locale: String
+    public let timestamp: Date
+    public let deviceRef: String?
+    public let sessionRef: String?
+    public let metadata: [String: String]
 
     public init(
         id: String,
@@ -34,5 +34,16 @@ public struct Intent: Sendable {
         self.deviceRef = deviceRef
         self.sessionRef = sessionRef
         self.metadata = metadata
+    }
+
+    enum CodingKeys: String, CodingKey {
+        case id
+        case source
+        case rawText
+        case locale
+        case timestamp
+        case deviceRef
+        case sessionRef
+        case metadata
     }
 }

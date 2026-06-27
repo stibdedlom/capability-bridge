@@ -88,12 +88,12 @@ public actor TraceEventEmitter: Sendable {
             subjectRef: frame.taskRef,
             status: "ok",
             outcome: "task framed",
-            payloadSummary: "riskTier=\(frame.riskTier) autonomyMode=\(frame.autonomyMode)",
+            payloadSummary: "riskTier=\(frame.riskTier.rawValue) autonomyMode=\(frame.autonomyMode.rawValue)",
             payloadHash: hash(frame.userGoal),
             attributes: [
                 "taskFrame.taskRef": frame.taskRef,
-                "taskFrame.riskTier": frame.riskTier,
-                "taskFrame.autonomyMode": frame.autonomyMode
+                "taskFrame.riskTier": frame.riskTier.rawValue,
+                "taskFrame.autonomyMode": frame.autonomyMode.rawValue
             ]
         ).build()
         try await emit(event)
@@ -143,8 +143,8 @@ public actor TraceEventEmitter: Sendable {
             subjectRef: route.capability,
             status: "ok",
             outcome: isFallback ? "fallback route selected" : "primary route selected",
-            payloadSummary: "capability=\(route.capability) mode=\(route.invocationMode)",
-            payloadHash: hash(route.capability + route.invocationMode + route.reason),
+            payloadSummary: "capability=\(route.capability) mode=\(route.invocationMode.rawValue)",
+            payloadHash: hash(route.capability + route.invocationMode.rawValue + route.reason),
             attributes: attrs
         ).build()
         try await emit(event)
@@ -165,13 +165,13 @@ public actor TraceEventEmitter: Sendable {
             subjectRef: request.scope,
             status: "pending",
             outcome: "approval requested for \(request.requestedAction)",
-            payloadSummary: "riskTier=\(request.riskTier) scope=\(request.scope)",
+            payloadSummary: "riskTier=\(request.riskTier.rawValue) scope=\(request.scope)",
             payloadHash: hash(request.requestedAction + request.scope),
             attributes: [
-                "approvalRequest.riskTier": request.riskTier,
+                "approvalRequest.riskTier": request.riskTier.rawValue,
                 "approvalRequest.requestedAction": request.requestedAction,
                 "approvalRequest.scope": request.scope,
-                "approvalRequest.approvalState": request.approvalState
+                "approvalRequest.approvalState": request.approvalState.rawValue
             ]
         ).build()
         try await emit(event)
@@ -192,15 +192,15 @@ public actor TraceEventEmitter: Sendable {
             parentEventID: parentEventID,
             subjectRef: response.requestRef,
             status: response.isApproved ? "approved" : "denied",
-            outcome: "approval \(response.approvalState) for \(request.requestedAction)",
+            outcome: "approval \(response.approvalState.rawValue) for \(request.requestedAction)",
             payloadSummary: "approvedScope=\(response.approvedScope.joined(separator: ",")) deniedActions=\(response.deniedActions.joined(separator: ","))",
-            payloadHash: hash(response.requestRef + response.approvalState + response.approvedScope.joined()),
+            payloadHash: hash(response.requestRef + response.approvalState.rawValue + response.approvedScope.joined()),
             approvalRefs: [response.requestRef],
             attributes: [
-                "approvalRequest.riskTier": request.riskTier,
+                "approvalRequest.riskTier": request.riskTier.rawValue,
                 "approvalRequest.requestedAction": request.requestedAction,
                 "approvalRequest.scope": request.scope,
-                "approvalRequest.approvalState": response.approvalState
+                "approvalRequest.approvalState": response.approvalState.rawValue
             ]
         ).build()
         try await emit(event)
@@ -216,13 +216,13 @@ public actor TraceEventEmitter: Sendable {
             parentEventID: parentEventID,
             subjectRef: packet.selectedCapability ?? packet.mode,
             status: "ok",
-            outcome: "capability invoked in \(packet.invocationMode) mode",
-            payloadSummary: "mode=\(packet.invocationMode) allowMutation=\(packet.allowMutation)",
-            payloadHash: hash(packet.mode + (packet.selectedCapability ?? "") + packet.invocationMode),
+            outcome: "capability invoked in \(packet.invocationMode.rawValue) mode",
+            payloadSummary: "mode=\(packet.invocationMode.rawValue) allowMutation=\(packet.allowMutation)",
+            payloadHash: hash(packet.mode + (packet.selectedCapability ?? "") + packet.invocationMode.rawValue),
             attributes: [
                 "capabilityPacket.mode": packet.mode,
                 "capabilityPacket.selectedCapability": packet.selectedCapability ?? "",
-                "capabilityPacket.invocationMode": packet.invocationMode,
+                "capabilityPacket.invocationMode": packet.invocationMode.rawValue,
                 "capabilityPacket.allowMutation": String(packet.allowMutation)
             ]
         ).build()

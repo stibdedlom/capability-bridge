@@ -54,17 +54,17 @@ struct TraceEventEmitterTests {
         let frame = TaskFrame(taskRef: "task-2", userGoal: "Implement feature", sourceIntent: "text")
         let plan = CapabilityPlan(
             taskFrameRef: "task-2",
-            primaryRoute: Route(capability: "capability-session-orchestrator", invocationMode: "execute", reason: "Impl", confidence: .high),
+            primaryRoute: Route(capability: "capability-session-orchestrator", invocationMode: .execute, reason: "Impl", confidence: .high),
             fallbackRoutes: [
-                Route(capability: "capability-workflow-router", invocationMode: "dry-run", reason: "Fallback", confidence: .medium)
+                Route(capability: "capability-workflow-router", invocationMode: .dryRun, reason: "Fallback", confidence: .medium)
             ],
             authorityRequired: ["allow_mutation"],
-            estimatedRiskTier: "medium"
+            estimatedRiskTier: .medium
         )
         let packet = CapabilityPacket(
             mode: "execute",
             selectedCapability: "capability-session-orchestrator",
-            invocationMode: "execute",
+            invocationMode: .execute,
             contextBundleRef: "bundle-1",
             authorityScope: ["allow_mutation"],
             allowMutation: true,
@@ -93,8 +93,8 @@ struct TraceEventEmitterTests {
         let frame = TaskFrame(taskRef: "task-3", userGoal: "Plan only", sourceIntent: "tap")
         let plan = CapabilityPlan(
             taskFrameRef: "task-3",
-            primaryRoute: Route(capability: "capability-workflow-router", invocationMode: "dry-run", reason: "Plan", confidence: .high),
-            estimatedRiskTier: "low"
+            primaryRoute: Route(capability: "capability-workflow-router", invocationMode: .dryRun, reason: "Plan", confidence: .high),
+            estimatedRiskTier: .low
         )
 
         _ = try await emitter.tracePipeline(intent: intent, frame: frame, plan: plan, packet: nil)
@@ -112,8 +112,8 @@ struct TraceEventEmitterTests {
         let frame = TaskFrame(taskRef: "task-4", userGoal: "Review", sourceIntent: "voice")
         let plan = CapabilityPlan(
             taskFrameRef: "task-4",
-            primaryRoute: Route(capability: "capability-implementation-reviewer", invocationMode: "dry-run", reason: "Review", confidence: .high),
-            estimatedRiskTier: "low"
+            primaryRoute: Route(capability: "capability-implementation-reviewer", invocationMode: .dryRun, reason: "Review", confidence: .high),
+            estimatedRiskTier: .low
         )
 
         let result = try await emitter.tracePipeline(intent: intent, frame: frame, plan: plan)
@@ -133,8 +133,8 @@ struct TraceEventEmitterTests {
         let frame = TaskFrame(taskRef: "task-5", userGoal: "Run tests", sourceIntent: "voice")
         let plan = CapabilityPlan(
             taskFrameRef: "task-5",
-            primaryRoute: Route(capability: "capability-session-orchestrator", invocationMode: "execute", reason: "Test", confidence: .high),
-            estimatedRiskTier: "low"
+            primaryRoute: Route(capability: "capability-session-orchestrator", invocationMode: .execute, reason: "Test", confidence: .high),
+            estimatedRiskTier: .low
         )
 
         let result = try await emitter.tracePipeline(intent: intent, frame: frame, plan: plan)

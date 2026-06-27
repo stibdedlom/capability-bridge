@@ -19,7 +19,7 @@ public enum SDLAdapterError: Error, Sendable {
 public struct SDLAdapter: Sendable {
 
     /// Default invocation mode used when the plan does not specify one.
-    public static let defaultInvocationMode = "dry-run"
+    public static let defaultInvocationMode: InvocationMode = .dryRun
 
     /// Identifier of the SDL capability registry that this adapter targets.
     public let registryRef: String
@@ -52,21 +52,19 @@ public struct SDLAdapter: Sendable {
             throw SDLAdapterError.noPrimaryRoute(taskFrameRef: plan.taskFrameRef)
         }
 
-        let invocationMode = plan.primaryRoute.invocationMode.isEmpty
-            ? Self.defaultInvocationMode
-            : plan.primaryRoute.invocationMode
+        let invocationMode = plan.primaryRoute.invocationMode
 
         let effectiveAuthority = effectiveAuthorityScope(plan: plan, approvedScope: approvedScope)
         let requiresApproval = plan.authorityRequired.contains("approval-gate")
         let approved = approvedScope.map { !$0.isEmpty } ?? !requiresApproval
-        let allowMutation = invocationMode == "execute" && approved
+        let allowMutation = invocationMode == .execute && approved
 
         var inputs: [String: String] = [
             "taskFrameRef": plan.taskFrameRef,
             "primaryCapability": plan.primaryRoute.capability,
             "registryRef": registryRef,
             "tracePolicy": plan.tracePolicy,
-            "estimatedRiskTier": plan.estimatedRiskTier
+            "estimatedRiskTier": plan.estimatedRiskTier.rawValue
         ]
 
         if !plan.fallbackRoutes.isEmpty {
@@ -116,8 +114,8 @@ public struct SDLAdapter: Sendable {
             omissions.append("No capability plan available at bundle assembly time")
         }
 
-        if frame.riskTier == "high" || frame.riskTier == "critical" {
-            omissions.append("Sensitive workspace details redacted due to riskTier=\(frame.riskTier)")
+        if frame.riskTier == .high || frame.riskTier == .critical {
+            omissions.append("Sensitive workspace details redacted due to riskTier=\(frame.riskTier.rawValue)")
         }
 
         if let repo = frame.repoContext, !repo.isEmpty {
@@ -133,9 +131,11 @@ public struct SDLAdapter: Sendable {
             omissions: omissions,
             freshness: Date(),
             tokenBudget: 4096,
-            rawContentPolicy: frame.riskTier == "high" || frame.riskTier == "critical" ? "redact-sensitive" : "include"
+            rawContentPolicy: frame.riskTier == .high || frame.riskTier == .critical ? "redact-sensitive" : "include"
         )
 
         return (ref, bundle)
     }
 }
+
+extension SDLAdapter: SDLAdapterProtocol {}

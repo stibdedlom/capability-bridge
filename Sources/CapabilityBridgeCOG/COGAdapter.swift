@@ -22,14 +22,14 @@ public enum COGAdapterError: Error, Sendable {
 public actor COGAdapter {
 
     public var planner: any CapabilityPlanner
-    public var sdlAdapter: SDLAdapter
+    public var sdlAdapter: any SDLAdapterProtocol
     public var traceEmitter: TraceEventEmitter
     public var approvalSurface: (any ApprovalSurface)?
     public var includePacketInResult: Bool
 
     public init(
         planner: any CapabilityPlanner = DefaultCapabilityPlanner(),
-        sdlAdapter: SDLAdapter = SDLAdapter(),
+        sdlAdapter: any SDLAdapterProtocol = SDLAdapter(),
         traceEmitter: TraceEventEmitter,
         approvalSurface: (any ApprovalSurface)? = nil,
         includePacketInResult: Bool = true
@@ -113,7 +113,7 @@ public actor COGAdapter {
             capabilityPlan: plan,
             capabilityPacket: packet,
             contextBundleRef: contextBundleRef,
-            status: approval?.1.approvalState == "denied" ? "approval-denied" : "ok",
+            status: approval?.1.approvalState == .denied ? "approval-denied" : "ok",
             summary: summary
         )
     }
@@ -167,12 +167,12 @@ public actor COGAdapter {
     private func makeApprovalRequest(for plan: CapabilityPlan, frame: TaskFrame) -> ApprovalRequest {
         ApprovalRequest(
             riskTier: plan.estimatedRiskTier,
-            requestedAction: "Execute \(plan.primaryRoute.capability) via \(plan.primaryRoute.invocationMode) mode",
+            requestedAction: "Execute \(plan.primaryRoute.capability) via \(plan.primaryRoute.invocationMode.rawValue) mode",
             evidenceRefs: [plan.taskFrameRef],
             scope: plan.authorityRequired.joined(separator: ", "),
             prohibitedActions: ["access secrets", "exfiltrate data", "modify outside allowed paths"],
             confirmationRitual: "tap-approve",
-            approvalState: "pending"
+            approvalState: .pending
         )
     }
 
@@ -197,9 +197,11 @@ public actor COGAdapter {
     ) -> String {
         let source = intent?.source ?? frame.sourceIntent
         let capability = plan.primaryRoute.capability
-        let mode = packet?.invocationMode ?? plan.primaryRoute.invocationMode
+        let mode = packet?.invocationMode.rawValue ?? plan.primaryRoute.invocationMode.rawValue
         let mutation = packet?.allowMutation == true ? "mutation-allowed" : "dry-run"
-        let approval = response?.approvalState ?? "not-required"
+        let approval = response?.approvalState.rawValue ?? "not-required"
         return "[\(source)] \(frame.userGoal) -> \(capability) (\(mode), \(mutation), approval=\(approval)) with \(plan.fallbackRoutes.count) fallback(s)"
     }
 }
+
+extension COGAdapter: COGAdapterProtocol {}
