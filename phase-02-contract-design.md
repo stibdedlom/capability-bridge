@@ -32,7 +32,7 @@ Per `BOUNDARY.md` and `REGISTRY.yml`, cross-repo contracts live in `workspace-ty
 
 ### 1.3 In-process Swift types with defined serialization path
 
-V0 transport is in-process: `workspace-core` and `capability-bridge` both link `workspace-types` and pass value types directly. The serialization path is defined as JSON encoding/decoding via `Codable` conformance (derived automatically). Future transport options (XPC, Network.framework `BridgeMessage`, local IPC) are documented but not implemented in V0.
+V0 transport is in-process: `workspace-core` and `capability-bridge` both link `workspace-types` and pass value types directly. The serialization path is JSON: struct and raw-value enum types are `Codable` (derived), while `Metadata`-carrying types and associated-value enums such as `CogTargetQuery` require consumer-side encoding adapters in `capability-bridge` and tests/fixtures. Future transport options (XPC, Network.framework `BridgeMessage`, local IPC) are documented but not implemented in V0.
 
 ### 1.4 No SDL leakage into `workspace-core`
 
@@ -56,6 +56,7 @@ All types are in `workspace-types-worktree-cog-bridge-1/Sources/WorkspaceTypes/c
 | `CogTraceEvent` | `events.swift` | Append-only correlation event emitted from COG to SDL lifecycle records. |
 | `CogPaneBackendEvent` | `events.swift` | Pane lifecycle events (opened, focused, closed, status changed). |
 | `CogApprovalResponse` | `approval.swift` | User's approve/deny/defer response to an SDL approval request. |
+| `CogTargetQuery` / `CogTargetResolution` | `cog_target_resolution.swift` | SDL-facing target resolution using only IDs and titles, not full `Tab` objects. |
 
 ### 2.2 SDL → COG
 
@@ -256,6 +257,17 @@ This protocol is added to `workspace-types` in Phase 4.
 - `rawContentPolicy` defaults to `"redact-sensitive"`.
 - High-risk actions require `SdlApprovalRequest` before any mutation.
 - `CogBridgeError` carries only user-facing messages across the boundary; technical detail is log-facing.
+
+### 7.1 Risk Tier → Confirmation Ritual Mapping
+
+| Risk Tier | Default Ritual | Notes |
+|---|---|---|
+| `safe` | None | Execute immediately; no approval envelope. |
+| `low` | `tapApprove` | One-tap confirmation; may be skipped if user policy allows. |
+| `medium` | `explicitConfirm` | Spoken or typed confirmation required before mutation. |
+| `high` | `biometric` or `watchHaptic` | Strong ritual required; default to strongest available surface. |
+
+Any `CogTaskFrame` with `scope == .execute` and `riskTier` of `.medium` or `.high` MUST produce an `SdlApprovalRequest` before a mutation capability is invoked.
 
 ## 8. Open Issues
 
