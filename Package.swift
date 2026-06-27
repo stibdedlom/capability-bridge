@@ -16,7 +16,7 @@ let package = Package(
     ],
     targets: [
         .target(name: "CapabilityBridge"),
-        .target(name: "CapabilityBridgeCOG", dependencies: ["CapabilityBridge", "CapabilityBridgeSDL"]),
+        .target(name: "CapabilityBridgeCOG", dependencies: ["CapabilityBridge", "CapabilityBridgeSDL", "ApprovalSurfaces"]),
         .target(name: "CapabilityBridgeSDL", dependencies: ["CapabilityBridge"]),
         .target(name: "PaneBackends", dependencies: ["CapabilityBridge"]),
         .target(name: "ApprovalSurfaces", dependencies: ["CapabilityBridge"]),

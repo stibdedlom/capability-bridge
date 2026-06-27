@@ -143,6 +143,7 @@ public struct DefaultCapabilityPlanner: CapabilityPlanner {
         }
 
         let authority = deriveAuthority(primary: primaryRule, frame: frame)
+        let estimatedRiskTier = higherRiskTier(primaryRule.riskTier, frame.riskTier)
 
         return CapabilityPlan(
             taskFrameRef: frame.taskRef,
@@ -150,7 +151,7 @@ public struct DefaultCapabilityPlanner: CapabilityPlanner {
             fallbackRoutes: fallbacks,
             authorityRequired: authority,
             tracePolicy: "emit-all",
-            estimatedRiskTier: primaryRule.riskTier
+            estimatedRiskTier: estimatedRiskTier
         )
     }
 
@@ -193,6 +194,13 @@ public struct DefaultCapabilityPlanner: CapabilityPlanner {
         let order: [RoutingConfidence] = [.none, .low, .medium, .high, .certain]
         guard let ai = order.firstIndex(of: a), let bi = order.firstIndex(of: b) else { return b }
         return order[min(ai, bi)]
+    }
+
+    private func higherRiskTier(_ a: String, _ b: String) -> String {
+        let order = ["low", "medium", "high", "critical"]
+        let ai = order.firstIndex(of: a) ?? 0
+        let bi = order.firstIndex(of: b) ?? 0
+        return order[max(ai, bi)]
     }
 
     // MARK: - Default rules
