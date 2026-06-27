@@ -269,11 +269,16 @@ This protocol is added to `workspace-types` in Phase 4.
 
 Any `CogTaskFrame` with `scope == .execute` and `riskTier` of `.medium` or `.high` MUST produce an `SdlApprovalRequest` before a mutation capability is invoked.
 
-## 8. Open Issues
+## 8. Resolved Decisions
 
-1. Whether `CapabilityBridgeClient` protocol should live in `cog_bridge_contract/` or a separate `bridge_client.swift` file.
-2. Whether to add a `CogCapabilityResult` union type for plan/approval/error instead of returning `Result<SdlCapabilityPlan, CogBridgeError>`.
-3. How to derive JSON schemas automatically without introducing a build-time dependency.
+1. **`CapabilityBridgeClient` protocol:** Lives in `cog_bridge_contract/bridge_client.swift` (WS-A).
+2. **`CogCapabilityResult` union:** Deferred. V0 uses `Result<SdlCapabilityPlan, CogBridgeError>` and a separate approval path.
+3. **Automatic JSON schema derivation:** Deferred to Phase 4; V0 schemas are hand-authored and validated against fixtures.
+
+## 9. Open Issues
+
+1. Which exact host/composition target owns runtime injection of `CapabilityBridgeClient` (host app vs. `workspace-host`).
+2. Whether V0 needs a `CogCapabilityResult` union for observe/advise-only responses.
 
 ---
 

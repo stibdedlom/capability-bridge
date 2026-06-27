@@ -60,8 +60,9 @@ Implementation is split into five independent workstreams. The dependency order 
 - `Sources/CapabilityBridgeCOG/CogIntentAdapter.swift` — replace placeholder; accepts `CogIntent`/`CogTaskFrame`, emits SDL packet/plan.
 - `Sources/CapabilityBridgeCOG/CogContextBundleBuilder.swift` — new; builds bounded `ContextBundle` from `CogContext`.
 - `Sources/CapabilityBridgeSDL/SDLAdapter.swift` — replace placeholder; routes packets to SDL capabilities and returns plans/artifacts.
+- `Sources/CapabilityBridgeSDL/CapabilityPlanResponder.swift` — new; returns `SdlCapabilityPlan` and `SdlApprovalRequest` envelopes back to COG.
 - `Sources/CapabilityBridgeSDL/TraceEventEmitter.swift` — new; writes `CogTraceEvent`s into SDL lifecycle records.
-- `Sources/PaneBackends/CogPaneBackend.swift` — new protocol and tmux reference implementation that maps to `HostAdapter` via `workspace-types` protocols.
+- `Sources/PaneBackends/CogPaneBackend.swift` — new protocol and tmux reference implementation that maps to `HostAdapter` via `workspace-types` protocols. V0 is observe/advise-only: no execute path is introduced.
 - `Sources/PaneBackends/MockPaneBackend.swift` — update to conform.
 - `AGENTS.md` — update contract boundary notes.
 
@@ -95,8 +96,9 @@ Implementation is split into five independent workstreams. The dependency order 
 
 **Tests that must pass:**
 - `swift build` and `swift test` in `workspace-core`.
-- BridgeContextProvider privacy tests (assert no raw output in serialization).
-- BridgeErrorTranslator tests.
+- BridgeContextProvider privacy tests (assert no raw output, command history, or secrets in `CogContext` serialization).
+- Boundary test: serialize a maximally populated `CogIntent` and assert `sourceIntent` does not leak host-adapter internals or unbounded payloads.
+- BridgeErrorTranslator tests: confirm `detail` is log-facing only and `userMessage` never forwards internal host error strings.
 - Feature-flag routing tests.
 
 **Risk and rollback:**
@@ -128,6 +130,7 @@ Implementation is split into five independent workstreams. The dependency order 
 - Error translation tests.
 - Pane backend mock tests.
 - Approval timeout/retry tests.
+- Boundary/privacy serialization tests for `CogIntent.sourceIntent` and `CogContext`.
 - Integration fixture proves end-to-end loop.
 
 **Advanced cases to cover or defer:**
@@ -158,7 +161,11 @@ Implementation is split into five independent workstreams. The dependency order 
 
 **Tests that must pass:**
 - `python3 scripts/registry-drift-check.py` after `REGISTRY.yml` changes.
-- `python3 scripts/agent-centric-lint.py` on new docs.
+- `swift build` and `swift test` in `workspace-core` and `capability-bridge` after doc changes that touch code comments.
+
+## Runtime Wiring
+
+`workspace-core` holds a `CapabilityBridgeClient` reference defined in `workspace-types`; `capability-bridge` provides a concrete conformance. The host app / `workspace-host` composition layer injects the conformance at runtime so that `workspace-core` never imports `capability-bridge`. This wiring layer is documented in `workspace-core/docs/migration-host-adapter-to-bridge.md` and exercised in the WS-D integration fixture.
 
 ## Minimal V0 Slice
 
