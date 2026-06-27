@@ -21,12 +21,12 @@ let package = Package(
         .package(url: "https://github.com/cocogiri/workspace-types.git", branch: "feature/cog-bridge-contract-alignment")
     ],
     targets: [
-        .target(name: "CapabilityBridge", dependencies: ["WorkspaceTypes"]),
-        .target(name: "CapabilityBridgeCOG", dependencies: ["CapabilityBridge", "WorkspaceTypes"]),
-        .target(name: "CapabilityBridgeSDL", dependencies: ["CapabilityBridge", "WorkspaceTypes"]),
-        .target(name: "PaneBackends", dependencies: ["CapabilityBridge", "WorkspaceTypes"]),
-        .target(name: "ApprovalSurfaces", dependencies: ["CapabilityBridge", "WorkspaceTypes"]),
-        .target(name: "ModelRouting", dependencies: ["CapabilityBridge", "WorkspaceTypes"]),
-        .testTarget(name: "CapabilityBridgeTests", dependencies: ["CapabilityBridge", "CapabilityBridgeCOG", "CapabilityBridgeSDL", "PaneBackends", "WorkspaceTypes"]),
+        .target(name: "CapabilityBridge", dependencies: [.product(name: "WorkspaceTypes", package: "workspace-types")]),
+        .target(name: "CapabilityBridgeCOG", dependencies: ["CapabilityBridge", .product(name: "WorkspaceTypes", package: "workspace-types")]),
+        .target(name: "CapabilityBridgeSDL", dependencies: ["CapabilityBridge", .product(name: "WorkspaceTypes", package: "workspace-types")]),
+        .target(name: "PaneBackends", dependencies: ["CapabilityBridge", .product(name: "WorkspaceTypes", package: "workspace-types")]),
+        .target(name: "ApprovalSurfaces", dependencies: ["CapabilityBridge", .product(name: "WorkspaceTypes", package: "workspace-types")]),
+        .target(name: "ModelRouting", dependencies: ["CapabilityBridge", .product(name: "WorkspaceTypes", package: "workspace-types")]),
+        .testTarget(name: "CapabilityBridgeTests", dependencies: ["CapabilityBridge", "CapabilityBridgeCOG", "CapabilityBridgeSDL", "PaneBackends", .product(name: "WorkspaceTypes", package: "workspace-types")]),
     ]
 )
