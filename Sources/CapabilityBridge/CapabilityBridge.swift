@@ -159,6 +159,7 @@ public struct TraceEvent: Sendable {
     public var payloadHash: String
     public var artifactRefs: [String]
     public var approvalRefs: [String]
+    public var attributes: [String: String]
 
     public init(
         eventType: String,
@@ -170,7 +171,8 @@ public struct TraceEvent: Sendable {
         payloadSummary: String,
         payloadHash: String,
         artifactRefs: [String] = [],
-        approvalRefs: [String] = []
+        approvalRefs: [String] = [],
+        attributes: [String: String] = [:]
     ) {
         self.eventType = eventType
         self.traceId = traceId
@@ -182,6 +184,7 @@ public struct TraceEvent: Sendable {
         self.payloadHash = payloadHash
         self.artifactRefs = artifactRefs
         self.approvalRefs = approvalRefs
+        self.attributes = attributes
     }
 }
 
