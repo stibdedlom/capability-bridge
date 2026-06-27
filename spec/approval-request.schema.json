@@ -1,8 +1,103 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "approval request schema",
+  "title": "SdlApprovalRequest",
+  "description": "A human decision envelope for a risky SDL action.",
   "type": "object",
-  "description": "Language-agnostic contract for approval request. See Sources/CapabilityBridge/CapabilityBridge.swift for the Swift reference implementation.",
-  "properties": {},
-  "additionalProperties": true
+  "required": [
+    "contract_version",
+    "trace_id",
+    "approval_ref",
+    "task_frame_ref",
+    "risk_tier",
+    "requested_action",
+    "evidence_refs",
+    "scope",
+    "expires_at",
+    "prohibited_actions",
+    "confirmation_ritual",
+    "state"
+  ],
+  "properties": {
+    "contract_version": {
+      "type": "string",
+      "const": "0.2.0"
+    },
+    "trace_id": {
+      "type": "string"
+    },
+    "approval_ref": {
+      "type": "string"
+    },
+    "task_frame_ref": {
+      "type": "string"
+    },
+    "risk_tier": {
+      "$ref": "#/$defs/risk_tier"
+    },
+    "requested_action": {
+      "type": "string"
+    },
+    "evidence_refs": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "scope": {
+      "type": "string"
+    },
+    "expires_at": {
+      "type": [
+        "integer",
+        "null"
+      ]
+    },
+    "prohibited_actions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "confirmation_ritual": {
+      "$ref": "#/$defs/confirmation_ritual"
+    },
+    "state": {
+      "$ref": "#/$defs/approval_state"
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "risk_tier": {
+      "type": "string",
+      "enum": [
+        "safe",
+        "low",
+        "medium",
+        "high"
+      ],
+      "description": "Risk classification for an action or tab."
+    },
+    "confirmation_ritual": {
+      "type": "string",
+      "enum": [
+        "tap-approve",
+        "explicit-confirm",
+        "biometric",
+        "watch-haptic"
+      ],
+      "description": "The ritual required to confirm an approval request."
+    },
+    "approval_state": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "presented",
+        "approved",
+        "denied",
+        "deferred",
+        "expired"
+      ],
+      "description": "The state of an SDL approval request."
+    }
+  }
 }

@@ -1,8 +1,56 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "artifact summary schema",
+  "title": "SdlArtifactSummary",
+  "description": "A compact result artifact for user display and deeper linking.",
   "type": "object",
-  "description": "Language-agnostic contract for artifact summary. See Sources/CapabilityBridge/CapabilityBridge.swift for the Swift reference implementation.",
-  "properties": {},
-  "additionalProperties": true
+  "required": [
+    "contract_version",
+    "trace_id",
+    "artifact_ref",
+    "artifact_type",
+    "path_or_uri",
+    "fingerprint",
+    "producer_capability",
+    "title",
+    "summary",
+    "conformance_summary",
+    "redaction_state"
+  ],
+  "properties": {
+    "contract_version": {
+      "type": "string",
+      "const": "0.2.0"
+    },
+    "trace_id": {
+      "type": "string"
+    },
+    "artifact_ref": {
+      "type": "string"
+    },
+    "artifact_type": {
+      "type": "string"
+    },
+    "path_or_uri": {
+      "type": "string"
+    },
+    "fingerprint": {
+      "type": "string"
+    },
+    "producer_capability": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    },
+    "summary": {
+      "type": "string"
+    },
+    "conformance_summary": {
+      "type": "string"
+    },
+    "redaction_state": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": false
 }

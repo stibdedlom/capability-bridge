@@ -1,0 +1,178 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "CogTargetQuery / CogTargetResolution",
+  "description": "SDL-facing workspace target query and resolution shapes.",
+  "oneOf": [
+    {
+      "$ref": "#/$defs/target_query"
+    },
+    {
+      "$ref": "#/$defs/target_resolution"
+    }
+  ],
+  "$defs": {
+    "tab_type": {
+      "type": "string",
+      "enum": [
+        "agent_cli",
+        "terminal",
+        "browser",
+        "ide",
+        "document",
+        "custom"
+      ],
+      "description": "The kind of workspace tab."
+    },
+    "target_reference": {
+      "type": "object",
+      "description": "A lightweight reference to a resolved workspace target.",
+      "required": [
+        "tab_id",
+        "title",
+        "type",
+        "surface_id",
+        "host_id"
+      ],
+      "properties": {
+        "tab_id": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "type": {
+          "$ref": "#/$defs/tab_type"
+        },
+        "surface_id": {
+          "type": "string"
+        },
+        "host_id": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "target_query": {
+      "oneOf": [
+        {
+          "type": "object",
+          "required": [
+            "kind",
+            "tab_id"
+          ],
+          "properties": {
+            "kind": {
+              "type": "string",
+              "const": "exact"
+            },
+            "tab_id": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "kind",
+            "title"
+          ],
+          "properties": {
+            "kind": {
+              "type": "string",
+              "const": "fuzzy"
+            },
+            "title": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "kind",
+            "tab_type"
+          ],
+          "properties": {
+            "kind": {
+              "type": "string",
+              "const": "type"
+            },
+            "tab_type": {
+              "$ref": "#/$defs/tab_type"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "kind"
+          ],
+          "properties": {
+            "kind": {
+              "type": "string",
+              "const": "all"
+            }
+          },
+          "additionalProperties": false
+        }
+      ]
+    },
+    "target_resolution": {
+      "oneOf": [
+        {
+          "type": "object",
+          "required": [
+            "kind",
+            "target"
+          ],
+          "properties": {
+            "kind": {
+              "type": "string",
+              "const": "single"
+            },
+            "target": {
+              "$ref": "#/$defs/target_reference"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "kind",
+            "targets"
+          ],
+          "properties": {
+            "kind": {
+              "type": "string",
+              "const": "ambiguous"
+            },
+            "targets": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/target_reference"
+              }
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "kind"
+          ],
+          "properties": {
+            "kind": {
+              "type": "string",
+              "const": "none"
+            }
+          },
+          "additionalProperties": false
+        }
+      ]
+    }
+  }
+}

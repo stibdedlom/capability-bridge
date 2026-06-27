@@ -1,0 +1,72 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "CogBridgeError",
+  "description": "A shared error envelope exchanged across the COG-SDL boundary.",
+  "type": "object",
+  "required": [
+    "contract_version",
+    "code",
+    "category",
+    "user_message",
+    "detail",
+    "retry_policy",
+    "trace_id",
+    "timestamp"
+  ],
+  "properties": {
+    "contract_version": {
+      "type": "string",
+      "const": "0.2.0"
+    },
+    "code": {
+      "type": "string"
+    },
+    "category": {
+      "$ref": "#/$defs/error_category"
+    },
+    "user_message": {
+      "type": "string"
+    },
+    "detail": {
+      "type": "string"
+    },
+    "retry_policy": {
+      "$ref": "#/$defs/retry_policy"
+    },
+    "trace_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "timestamp": {
+      "type": "integer"
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "error_category": {
+      "type": "string",
+      "enum": [
+        "validation",
+        "host",
+        "capability",
+        "approval",
+        "transport",
+        "timeout",
+        "unknown"
+      ],
+      "description": "The high-level category of a COG-SDL bridge error."
+    },
+    "retry_policy": {
+      "type": "string",
+      "enum": [
+        "none",
+        "once",
+        "backoff",
+        "afterApproval"
+      ],
+      "description": "The recommended retry policy for a bridge error."
+    }
+  }
+}

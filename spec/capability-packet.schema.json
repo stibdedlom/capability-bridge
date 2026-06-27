@@ -1,8 +1,81 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "capability packet schema",
+  "title": "SdlCapabilityPacket",
+  "description": "A request from the bridge to the SDL capability layer.",
   "type": "object",
-  "description": "Language-agnostic contract for capability packet. See Sources/CapabilityBridge/CapabilityBridge.swift for the Swift reference implementation.",
-  "properties": {},
-  "additionalProperties": true
+  "required": [
+    "contract_version",
+    "trace_id",
+    "task_frame_ref",
+    "mode",
+    "selected_capability",
+    "invocation_mode",
+    "inputs",
+    "context_bundle_ref",
+    "authority_scope",
+    "allow_mutation",
+    "expected_outputs"
+  ],
+  "properties": {
+    "contract_version": {
+      "type": "string",
+      "const": "0.2.0"
+    },
+    "trace_id": {
+      "type": "string"
+    },
+    "task_frame_ref": {
+      "type": "string"
+    },
+    "mode": {
+      "type": "string"
+    },
+    "selected_capability": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "invocation_mode": {
+      "$ref": "#/$defs/invocation_mode"
+    },
+    "inputs": {
+      "$ref": "#/$defs/metadata"
+    },
+    "context_bundle_ref": {
+      "type": "string"
+    },
+    "authority_scope": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "allow_mutation": {
+      "type": "boolean"
+    },
+    "expected_outputs": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "metadata": {
+      "type": "object",
+      "description": "A metadata bag with string keys and arbitrary JSON values.",
+      "additionalProperties": true
+    },
+    "invocation_mode": {
+      "type": "string",
+      "enum": [
+        "dry-run",
+        "execute",
+        "approval-required"
+      ],
+      "description": "How a capability packet should be invoked."
+    }
+  }
 }

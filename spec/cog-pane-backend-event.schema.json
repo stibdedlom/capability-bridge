@@ -1,0 +1,55 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "CogPaneBackendEvent",
+  "description": "A pane lifecycle event emitted from COG to SDL.",
+  "type": "object",
+  "required": [
+    "contract_version",
+    "trace_id",
+    "event_type",
+    "session_id",
+    "backend_id",
+    "status",
+    "timestamp"
+  ],
+  "properties": {
+    "contract_version": {
+      "type": "string",
+      "const": "0.2.0"
+    },
+    "trace_id": {
+      "type": "string"
+    },
+    "event_type": {
+      "$ref": "#/$defs/pane_backend_event_type"
+    },
+    "session_id": {
+      "type": "string"
+    },
+    "backend_id": {
+      "type": "string"
+    },
+    "status": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "timestamp": {
+      "type": "integer"
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "pane_backend_event_type": {
+      "type": "string",
+      "enum": [
+        "opened",
+        "focused",
+        "closed",
+        "status_changed"
+      ],
+      "description": "The kind of pane backend lifecycle event."
+    }
+  }
+}

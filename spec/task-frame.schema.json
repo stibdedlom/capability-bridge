@@ -1,8 +1,97 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "task frame schema",
+  "title": "CogTaskFrame",
+  "description": "A scoped, routeable unit of work produced from a COG intent and context.",
   "type": "object",
-  "description": "Language-agnostic contract for task frame. See Sources/CapabilityBridge/CapabilityBridge.swift for the Swift reference implementation.",
-  "properties": {},
-  "additionalProperties": true
+  "required": [
+    "contract_version",
+    "trace_id",
+    "intent",
+    "context",
+    "scope",
+    "risk_tier",
+    "autonomy_mode",
+    "requested_outcome",
+    "constraints",
+    "open_questions",
+    "status",
+    "created_at"
+  ],
+  "properties": {
+    "contract_version": {
+      "type": "string",
+      "const": "0.2.0"
+    },
+    "trace_id": {
+      "type": "string"
+    },
+    "intent": {
+      "$ref": "cog-intent.schema.json"
+    },
+    "context": {
+      "$ref": "context-bundle.schema.json"
+    },
+    "scope": {
+      "$ref": "#/$defs/task_scope"
+    },
+    "risk_tier": {
+      "type": "string",
+      "enum": [
+        "safe",
+        "low",
+        "medium",
+        "high"
+      ],
+      "description": "Risk classification for an action or tab."
+    },
+    "autonomy_mode": {
+      "type": "string"
+    },
+    "requested_outcome": {
+      "type": "string"
+    },
+    "constraints": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "open_questions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "status": {
+      "$ref": "#/$defs/task_status"
+    },
+    "created_at": {
+      "type": "integer"
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "task_scope": {
+      "type": "string",
+      "enum": [
+        "observe",
+        "advise",
+        "execute"
+      ],
+      "description": "The allowed scope of SDL involvement for a task."
+    },
+    "task_status": {
+      "type": "string",
+      "enum": [
+        "new",
+        "routing",
+        "awaitingApproval",
+        "executing",
+        "completed",
+        "stopped",
+        "failed"
+      ],
+      "description": "The lifecycle status of a COG task frame."
+    }
+  }
 }

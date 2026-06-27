@@ -1,0 +1,47 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "CogApprovalResponse",
+  "description": "COG's response to an SDL approval request.",
+  "type": "object",
+  "required": [
+    "contract_version",
+    "trace_id",
+    "approval_ref",
+    "decision",
+    "responder_identity",
+    "timestamp"
+  ],
+  "properties": {
+    "contract_version": {
+      "type": "string",
+      "const": "0.2.0"
+    },
+    "trace_id": {
+      "type": "string"
+    },
+    "approval_ref": {
+      "type": "string"
+    },
+    "decision": {
+      "$ref": "#/$defs/approval_decision"
+    },
+    "responder_identity": {
+      "type": "string"
+    },
+    "timestamp": {
+      "type": "integer"
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "approval_decision": {
+      "type": "string",
+      "enum": [
+        "approved",
+        "denied",
+        "deferred"
+      ],
+      "description": "The user's decision on an SDL approval request."
+    }
+  }
+}

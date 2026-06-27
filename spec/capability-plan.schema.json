@@ -1,0 +1,112 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "SdlCapabilityPlan",
+  "description": "A planned set of steps, risk estimate, and required approvals returned to COG.",
+  "type": "object",
+  "required": [
+    "contract_version",
+    "trace_id",
+    "task_frame_ref",
+    "plan_id",
+    "steps",
+    "estimated_risk",
+    "required_approvals",
+    "target_refs",
+    "summary",
+    "constraints"
+  ],
+  "properties": {
+    "contract_version": {
+      "type": "string",
+      "const": "0.2.0"
+    },
+    "trace_id": {
+      "type": "string"
+    },
+    "task_frame_ref": {
+      "type": "string"
+    },
+    "plan_id": {
+      "type": "string"
+    },
+    "steps": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/plan_step"
+      }
+    },
+    "estimated_risk": {
+      "$ref": "#/$defs/risk_tier"
+    },
+    "required_approvals": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "target_refs": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "summary": {
+      "type": "string"
+    },
+    "constraints": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "risk_tier": {
+      "type": "string",
+      "enum": [
+        "safe",
+        "low",
+        "medium",
+        "high"
+      ],
+      "description": "Risk classification for an action or tab."
+    },
+    "plan_step": {
+      "type": "object",
+      "description": "A single step in an SDL capability plan.",
+      "required": [
+        "id",
+        "description",
+        "capability",
+        "risk_tier",
+        "requires_approval",
+        "target_refs"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "capability": {
+          "type": "string"
+        },
+        "risk_tier": {
+          "$ref": "#/$defs/risk_tier"
+        },
+        "requires_approval": {
+          "type": "boolean"
+        },
+        "target_refs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}
