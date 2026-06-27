@@ -18,3 +18,11 @@ This example demonstrates the first Capability Bridge prototype.
 - Does not require full autonomous mutation, cross-project orchestration, or spatial computing.
 - Produces trust before autonomy.
 - Can run against a safe target such as a docs repo or test suite before touching client code.
+
+## Running the example
+
+```bash
+swift run WorkerReviewerExample
+```
+
+The executable uses `MockPaneBackend` and `InMemoryStateStore`, so it performs no real mutation and is safe to run locally.

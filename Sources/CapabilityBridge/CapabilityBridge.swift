@@ -8,7 +8,7 @@
 import Foundation
 
 /// A scoped, routeable unit of work produced from a COG Intent.
-public struct TaskFrame: Sendable {
+public struct TaskFrame: Sendable, Equatable {
     public var taskRef: String
     public var userGoal: String
     public var sourceIntent: String
@@ -218,19 +218,4 @@ public struct ArtifactSummary: Sendable {
         self.conformanceSummary = conformanceSummary
         self.redactionState = redactionState
     }
-}
-
-/// Protocol for backends that host visible agent sessions.
-public protocol PaneBackend: Sendable {
-    /// Spawn a new visible session with the given role and identifier.
-    func spawnSession(id: String, role: String, command: String?) async throws -> String
-
-    /// Write a line of input to the session.
-    func sendInput(sessionID: String, input: String) async throws
-
-    /// Read the latest output from the session.
-    func readOutput(sessionID: String) async throws -> String
-
-    /// Pause or stop the session.
-    func stopSession(sessionID: String) async throws
 }

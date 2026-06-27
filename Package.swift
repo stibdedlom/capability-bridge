@@ -13,6 +13,7 @@ let package = Package(
         .library(name: "PaneBackends", targets: ["PaneBackends"]),
         .library(name: "ApprovalSurfaces", targets: ["ApprovalSurfaces"]),
         .library(name: "ModelRouting", targets: ["ModelRouting"]),
+        .executable(name: "WorkerReviewerExample", targets: ["WorkerReviewerExample"]),
     ],
     targets: [
         .target(name: "CapabilityBridge"),
@@ -21,6 +22,12 @@ let package = Package(
         .target(name: "PaneBackends", dependencies: ["CapabilityBridge"]),
         .target(name: "ApprovalSurfaces", dependencies: ["CapabilityBridge"]),
         .target(name: "ModelRouting", dependencies: ["CapabilityBridge"]),
-        .testTarget(name: "CapabilityBridgeTests", dependencies: ["CapabilityBridge"]),
+        .executableTarget(
+            name: "WorkerReviewerExample",
+            dependencies: ["CapabilityBridge", "PaneBackends"],
+            path: "examples/worker-reviewer-pair",
+            exclude: ["README.md"]
+        ),
+        .testTarget(name: "CapabilityBridgeTests", dependencies: ["CapabilityBridge", "PaneBackends"]),
     ]
 )
