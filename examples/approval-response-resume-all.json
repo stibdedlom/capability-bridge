@@ -1,0 +1,8 @@
+{
+  "contract_version": "0.3.0",
+  "request_id": "approval-trace-1",
+  "task_frame_ref": "trace-1",
+  "decision": "resume_all",
+  "surface_ref": "surface-watch",
+  "resolved_at": 2000
+}

@@ -1,0 +1,53 @@
+{
+  "schema_version": "1.2.0",
+  "id": "3fb96aba-0f48-40dd-8989-0e6d79afc0d1",
+  "task_ref": "parallel-issue-fanout-2026-06-28-lane-b",
+  "branch": "feature/bridge-approval-envelope-phase2",
+  "actor": "v-i-s-h-a-l",
+  "revision": 1,
+  "created_event": "manual",
+  "classification": "execution",
+  "tier": 2,
+  "preflight": {
+    "touched_paths": [
+      "registry/index.yaml",
+      "docs/decisions/004-cog-bridge-boundary.md",
+      "spec/trace-event.schema.json",
+      "Sources/",
+      ".workflow/3fb96aba-0f48-40dd-8989-0e6d79afc0d1.json",
+      "docs/decisions/adr-071-bridge-phase2-approval-envelope.md",
+      ".workflow/routing/parallel-issue-fanout-2026-06-28-lane-b-routing.json",
+      "Tests/",
+      "spec/approval-request.schema.json"
+    ],
+    "required_reviewers": [
+      "BASE",
+      "APEX"
+    ],
+    "adr_required": true,
+    "flags": []
+  },
+  "status": "open",
+  "links": {
+    "issue": "https://github.com/stibdedlom/capability-bridge/issues/9",
+    "routing_decision": ".workflow/routing/parallel-issue-fanout-2026-06-28-lane-b-routing.json",
+    "parent_task_ref": "parallel-issue-fanout-2026-06-28",
+    "capability": "capability-registry",
+    "adr": "docs/decisions/adr-071-bridge-phase2-approval-envelope.md"
+  },
+  "authority_envelope": {
+    "allow_mutation": true,
+    "allowed_paths": [
+      "spec/",
+      ".workflow/",
+      "docs/decisions/",
+      "Sources/",
+      "registry/",
+      "Tests/"
+    ],
+    "branch_or_worktree_isolation": "feature/bridge-approval-envelope-phase2",
+    "approval_gate": "user-instruction",
+    "verification_and_rollback_plan": "swift build && swift test, scripts/lifecycle/validate-record.sh --base origin/main --branch feature/bridge-approval-envelope-phase2, git diff --check; rollback: delete feature branch/worktree"
+  },
+  "audit_hash": "e8c31801f5dcce730acfb8f7c8ff0a43288c8dbbf94e051eb506d327c80ea5c2"
+}

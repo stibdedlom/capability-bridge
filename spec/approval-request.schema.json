@@ -1,26 +1,55 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "SdlApprovalRequest",
-  "description": "A human decision envelope for a risky SDL action.",
+  "description": "A human decision envelope for a risky SDL action (Phase 2 approval envelope).",
   "type": "object",
   "required": [
     "contract_version",
-    "trace_id",
-    "approval_ref",
+    "request_id",
     "task_frame_ref",
     "risk_tier",
-    "requested_action",
-    "evidence_refs",
     "scope",
     "expires_at",
-    "prohibited_actions",
-    "confirmation_ritual",
-    "state"
+    "evidence_refs",
+    "scope_hash"
   ],
   "properties": {
     "contract_version": {
       "type": "string",
-      "const": "0.2.0"
+      "const": "0.3.0"
+    },
+    "request_id": {
+      "type": "string",
+      "description": "Stable identifier for this approval request."
+    },
+    "task_frame_ref": {
+      "type": "string",
+      "description": "Reference to the task frame that generated the request."
+    },
+    "risk_tier": {
+      "$ref": "#/$defs/risk_tier"
+    },
+    "scope": {
+      "type": "string",
+      "description": "Scope of the approval."
+    },
+    "expires_at": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "description": "When the request expires, if ever (Unix milliseconds)."
+    },
+    "evidence_refs": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "References to evidence artifacts."
+    },
+    "scope_hash": {
+      "type": "string",
+      "description": "Stable hash computed over the approved scope."
     },
     "trace_id": {
       "type": "string"
@@ -28,29 +57,8 @@
     "approval_ref": {
       "type": "string"
     },
-    "task_frame_ref": {
-      "type": "string"
-    },
-    "risk_tier": {
-      "$ref": "#/$defs/risk_tier"
-    },
     "requested_action": {
       "type": "string"
-    },
-    "evidence_refs": {
-      "type": "array",
-      "items": {
-        "type": "string"
-      }
-    },
-    "scope": {
-      "type": "string"
-    },
-    "expires_at": {
-      "type": [
-        "integer",
-        "null"
-      ]
     },
     "prohibited_actions": {
       "type": "array",

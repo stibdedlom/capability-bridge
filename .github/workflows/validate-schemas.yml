@@ -1,0 +1,44 @@
+name: Validate Approval Schemas
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install jsonschema
+        run: pip install jsonschema
+      - name: Validate approval request samples
+        run: |
+          python3 - <<'PY'
+          import json
+          import jsonschema
+          from pathlib import Path
+
+          schema = json.loads(Path("spec/approval-request.schema.json").read_text())
+          for path in Path("examples").glob("approval-request-*.json"):
+              instance = json.loads(path.read_text())
+              jsonschema.validate(instance, schema)
+              print(f"OK {path}")
+          PY
+      - name: Validate approval response samples
+        run: |
+          python3 - <<'PY'
+          import json
+          import jsonschema
+          from pathlib import Path
+
+          schema = json.loads(Path("spec/approval-response.schema.json").read_text())
+          for path in Path("examples").glob("approval-response-*.json"):
+              instance = json.loads(path.read_text())
+              jsonschema.validate(instance, schema)
+              print(f"OK {path}")
+          PY

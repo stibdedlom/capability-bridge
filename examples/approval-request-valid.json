@@ -1,0 +1,12 @@
+{
+  "contract_version": "0.3.0",
+  "request_id": "approval-trace-1",
+  "task_frame_ref": "trace-1",
+  "risk_tier": "high",
+  "scope": "execute",
+  "expires_at": 2000,
+  "evidence_refs": [
+    "evidence-1"
+  ],
+  "scope_hash": "sha256:3a6eb0790f39ac87c94f3856b2dd2c5d110e6811602261a9a923d3bb23adc8b7"
+}
