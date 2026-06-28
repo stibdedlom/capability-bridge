@@ -36,7 +36,8 @@
       ]
     },
     "event_type": {
-      "type": "string"
+      "type": "string",
+      "$comment": "Event type values include intent_received, host_called, approval_presented, and approval_resolution. For approval_resolution events, set approval_refs to the request_id(s) of the resolved approval request(s) and set payload_summary to a concise description of the decision and resulting SDL task-phase transition."
     },
     "subject_ref": {
       "type": "string"
@@ -48,7 +49,8 @@
       "type": "string"
     },
     "payload_summary": {
-      "type": "string"
+      "type": "string",
+      "$comment": "For approval_resolution events, the payload summary SHOULD include the decision (approve/reject/redirect/pause_all/resume_all/stop_all) and the resulting task frame phase, e.g. 'decision=approve phase=executing'."
     },
     "payload_hash": {
       "type": "string"
@@ -63,7 +65,8 @@
       "type": "array",
       "items": {
         "type": "string"
-      }
+      },
+      "$comment": "For approval_resolution events, approval_refs MUST contain the request_id of the resolved approval request."
     },
     "timestamp": {
       "type": "integer"

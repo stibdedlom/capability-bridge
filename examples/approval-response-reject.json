@@ -1,0 +1,9 @@
+{
+  "contract_version": "0.3.0",
+  "request_id": "approval-trace-1",
+  "task_frame_ref": "trace-1",
+  "decision": "reject",
+  "surface_ref": "surface-iphone",
+  "resolved_at": 2000,
+  "reason": "User declined the action."
+}

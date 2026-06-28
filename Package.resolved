@@ -1,0 +1,15 @@
+{
+  "originHash" : "e02a9bf54775de103e33b1a6f3274d0413543df7241465651ee8543e7ec6372e",
+  "pins" : [
+    {
+      "identity" : "workspace-types",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/cocogiri/workspace-types.git",
+      "state" : {
+        "branch" : "feature/cog-bridge-contract-alignment",
+        "revision" : "5f976eda3a96d21da1edc53af8bce039952ef936"
+      }
+    }
+  ],
+  "version" : 3
+}
