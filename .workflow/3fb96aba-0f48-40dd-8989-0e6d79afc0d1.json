@@ -4,7 +4,7 @@
   "task_ref": "parallel-issue-fanout-2026-06-28-lane-b",
   "branch": "feature/bridge-approval-envelope-phase2",
   "actor": "v-i-s-h-a-l",
-  "revision": 1,
+  "revision": 2,
   "created_event": "manual",
   "classification": "execution",
   "tier": 2,
@@ -33,7 +33,8 @@
     "routing_decision": ".workflow/routing/parallel-issue-fanout-2026-06-28-lane-b-routing.json",
     "parent_task_ref": "parallel-issue-fanout-2026-06-28",
     "capability": "capability-registry",
-    "adr": "docs/decisions/adr-071-bridge-phase2-approval-envelope.md"
+    "adr": "docs/decisions/adr-071-bridge-phase2-approval-envelope.md",
+    "pr": "https://github.com/stibdedlom/capability-bridge/pull/12"
   },
   "authority_envelope": {
     "allow_mutation": true,
@@ -49,5 +50,5 @@
     "approval_gate": "user-instruction",
     "verification_and_rollback_plan": "swift build && swift test, scripts/lifecycle/validate-record.sh --base origin/main --branch feature/bridge-approval-envelope-phase2, git diff --check; rollback: delete feature branch/worktree"
   },
-  "audit_hash": "e8c31801f5dcce730acfb8f7c8ff0a43288c8dbbf94e051eb506d327c80ea5c2"
+  "audit_hash": "fb2f86a4cb1c869d73cf5ac31d43564278cd1ef36460a9eb8739189001080c50"
 }
