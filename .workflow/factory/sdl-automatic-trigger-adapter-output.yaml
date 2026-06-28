@@ -1,0 +1,11 @@
+capability_id: capability-factory
+artifact_type: capability_update
+request_id: sdl-automatic-trigger-adapter
+blockers: []
+content:
+  updated_capabilities:
+    - capability-workflow-router
+  summary: >-
+    Added an adapter layer around capability-workflow-router trigger policy so
+    host and repository events are observable, gated, and routed through the
+    existing lifecycle invocation path.

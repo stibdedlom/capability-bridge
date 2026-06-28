@@ -18,7 +18,7 @@ let package = Package(
         .library(name: "ModelRouting", targets: ["ModelRouting"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/cocogiri/workspace-types.git", branch: "feature/cog-bridge-contract-alignment")
+        .package(url: "https://github.com/cocogiri/workspace-types.git", branch: "main")
     ],
     targets: [
         .target(name: "CapabilityBridge", dependencies: [.product(name: "WorkspaceTypes", package: "workspace-types")]),
