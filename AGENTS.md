@@ -33,6 +33,10 @@ The package builds on macOS 26+ with Swift 6.0.
 
 When a user invokes `$stibdedlom` or `use stibdedlom`, follow the global stibdedlom skill routing and load `capability-routing` from `stibdedlom/infra`.
 
+## SDL Routing for Apple Platform / Swift Changes
+
+All changes to Swift source files or Apple-platform APIs in this repository must be routed through SDL, and the relevant SDL capabilities must be applied. See [`../../cocogiri/cocogiri-meta/MEMORY/apple-platform-swift-sdl-routing.md`](../../cocogiri/cocogiri-meta/MEMORY/apple-platform-swift-sdl-routing.md) for the full rule, skill installation instructions, and bypass criteria.
+
 ## Forbidden patterns
 
 - Do not call SDL capabilities directly from COG; route through the bridge.
