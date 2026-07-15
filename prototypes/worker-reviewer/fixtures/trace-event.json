@@ -1,0 +1,14 @@
+{
+  "schema_version": "0.2.0",
+  "trace_event_id": "te-approval-001",
+  "task_frame_id": "tf-worker-reviewer-demo-001",
+  "parent_trace_event_id": "te-checkpoint-001",
+  "event_type": "approval_response",
+  "actor": "reviewer",
+  "payload": {
+    "approval_request_id": "ar-worker-reviewer-demo-001",
+    "decision": "approve",
+    "worker_state_transition": "paused -> running"
+  },
+  "created_at": "2026-07-15T12:02:00Z"
+}
