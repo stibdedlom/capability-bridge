@@ -1,0 +1,21 @@
+{
+  "schema_version": "0.2.0",
+  "task_frame_id": "tf-worker-reviewer-demo-001",
+  "intent": {
+    "text": "Add a validation test for the trace event schema.",
+    "source": "cog-text"
+  },
+  "scope": {
+    "allowed_paths": [
+      "Tests/CapabilityBridgeTests/TraceEventSchemaTests.swift",
+      "spec/trace-event.schema.json"
+    ],
+    "forbidden_actions": [
+      "network",
+      "destructive",
+      "deploy"
+    ]
+  },
+  "owner": "v-i-s-h-a-l",
+  "created_at": "2026-07-15T12:00:00Z"
+}
