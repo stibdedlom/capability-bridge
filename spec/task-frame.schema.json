@@ -1,97 +1,69 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "CogTaskFrame",
-  "description": "A scoped, routeable unit of work produced from a COG intent and context.",
+  "title": "task frame schema",
   "type": "object",
+  "description": "Language-agnostic contract for a framed, routeable unit of work produced from a COG Intent. See Sources/CapabilityBridge/CapabilityBridge.swift for the Swift reference implementation.",
   "required": [
-    "contract_version",
-    "trace_id",
-    "intent",
-    "context",
-    "scope",
-    "risk_tier",
-    "autonomy_mode",
-    "requested_outcome",
+    "taskRef",
+    "userGoal",
+    "sourceIntent",
+    "riskTier",
+    "autonomyMode",
+    "requestedOutcome",
     "constraints",
-    "open_questions",
     "status",
-    "created_at"
+    "openQuestions"
   ],
   "properties": {
-    "contract_version": {
+    "taskRef": {
       "type": "string",
-      "const": "0.2.0"
+      "description": "Stable identifier for this task, typically derived from the source Intent id."
     },
-    "trace_id": {
-      "type": "string"
-    },
-    "intent": {
-      "$ref": "cog-intent.schema.json"
-    },
-    "context": {
-      "$ref": "context-bundle.schema.json"
-    },
-    "scope": {
-      "$ref": "#/$defs/task_scope"
-    },
-    "risk_tier": {
+    "userGoal": {
       "type": "string",
-      "enum": [
-        "safe",
-        "low",
-        "medium",
-        "high"
-      ],
-      "description": "Risk classification for an action or tab."
+      "description": "The human-readable goal extracted from the intent."
     },
-    "autonomy_mode": {
-      "type": "string"
+    "sourceIntent": {
+      "type": "string",
+      "description": "Identifier or name of the surface that produced the intent (e.g. voice, text, tap)."
     },
-    "requested_outcome": {
-      "type": "string"
+    "workspaceTarget": {
+      "type": ["string", "null"],
+      "description": "Optional workspace or project target the intent refers to."
+    },
+    "repoContext": {
+      "type": ["string", "null"],
+      "description": "Optional repository or project context."
+    },
+    "riskTier": {
+      "type": "string",
+      "enum": ["low", "medium", "high", "critical"],
+      "description": "Estimated risk tier of the task."
+    },
+    "autonomyMode": {
+      "type": "string",
+      "enum": ["advise", "plan", "execute"],
+      "description": "Requested autonomy level for the task."
+    },
+    "requestedOutcome": {
+      "type": "string",
+      "description": "What the user expects to receive back."
     },
     "constraints": {
       "type": "array",
-      "items": {
-        "type": "string"
-      }
-    },
-    "open_questions": {
-      "type": "array",
-      "items": {
-        "type": "string"
-      }
+      "items": { "type": "string" },
+      "description": "Free-form constraints that must be respected."
     },
     "status": {
-      "$ref": "#/$defs/task_status"
+      "type": "string",
+      "enum": ["new", "framed", "planned", "approved", "running", "completed", "failed", "cancelled"],
+      "description": "Lifecycle status of the task frame."
     },
-    "created_at": {
-      "type": "integer"
+    "openQuestions": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Questions that must be answered before execution."
     }
   },
-  "additionalProperties": false,
-  "$defs": {
-    "task_scope": {
-      "type": "string",
-      "enum": [
-        "observe",
-        "advise",
-        "execute"
-      ],
-      "description": "The allowed scope of SDL involvement for a task."
-    },
-    "task_status": {
-      "type": "string",
-      "enum": [
-        "new",
-        "routing",
-        "awaitingApproval",
-        "executing",
-        "completed",
-        "stopped",
-        "failed"
-      ],
-      "description": "The lifecycle status of a COG task frame."
-    }
-  }
+  "additionalProperties": false
 }

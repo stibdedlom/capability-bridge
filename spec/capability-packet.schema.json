@@ -1,81 +1,54 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "SdlCapabilityPacket",
-  "description": "A request from the bridge to the SDL capability layer.",
+  "title": "capability packet schema",
   "type": "object",
+  "description": "Language-agnostic contract for a request from the bridge to the SDL capability layer. See Sources/CapabilityBridge/CapabilityBridge.swift for the Swift reference implementation.",
   "required": [
-    "contract_version",
-    "trace_id",
-    "task_frame_ref",
     "mode",
-    "selected_capability",
-    "invocation_mode",
+    "invocationMode",
     "inputs",
-    "context_bundle_ref",
-    "authority_scope",
-    "allow_mutation",
-    "expected_outputs"
+    "contextBundleRef",
+    "authorityScope",
+    "allowMutation",
+    "expectedOutputs"
   ],
   "properties": {
-    "contract_version": {
-      "type": "string",
-      "const": "0.2.0"
-    },
-    "trace_id": {
-      "type": "string"
-    },
-    "task_frame_ref": {
-      "type": "string"
-    },
     "mode": {
-      "type": "string"
+      "type": "string",
+      "description": "Interaction mode (e.g. dry-run, execute, plan, review)."
     },
-    "selected_capability": {
-      "type": [
-        "string",
-        "null"
-      ]
+    "selectedCapability": {
+      "type": ["string", "null"],
+      "description": "Identifier of the capability being invoked, if a route has been selected."
     },
-    "invocation_mode": {
-      "$ref": "#/$defs/invocation_mode"
+    "invocationMode": {
+      "type": "string",
+      "enum": ["dry-run", "execute"],
+      "description": "Whether the capability should actually mutate state."
     },
     "inputs": {
-      "$ref": "#/$defs/metadata"
+      "type": "object",
+      "additionalProperties": { "type": "string" },
+      "description": "Key-value inputs for the capability."
     },
-    "context_bundle_ref": {
-      "type": "string"
+    "contextBundleRef": {
+      "type": "string",
+      "description": "Reference to the ContextBundle that accompanies this packet."
     },
-    "authority_scope": {
+    "authorityScope": {
       "type": "array",
-      "items": {
-        "type": "string"
-      }
+      "items": { "type": "string" },
+      "description": "Authority tokens or scopes granted to this invocation."
     },
-    "allow_mutation": {
-      "type": "boolean"
+    "allowMutation": {
+      "type": "boolean",
+      "description": "True if the capability is permitted to mutate state."
     },
-    "expected_outputs": {
+    "expectedOutputs": {
       "type": "array",
-      "items": {
-        "type": "string"
-      }
+      "items": { "type": "string" },
+      "description": "Names or references of outputs the caller expects."
     }
   },
-  "additionalProperties": false,
-  "$defs": {
-    "metadata": {
-      "type": "object",
-      "description": "A metadata bag with string keys and arbitrary JSON values.",
-      "additionalProperties": true
-    },
-    "invocation_mode": {
-      "type": "string",
-      "enum": [
-        "dry-run",
-        "execute",
-        "approval-required"
-      ],
-      "description": "How a capability packet should be invoked."
-    }
-  }
+  "additionalProperties": false
 }

@@ -1,312 +1,62 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "CogContext",
-  "description": "A bounded, privacy-aware context package assembled by COG for SDL.",
+  "title": "context bundle schema",
   "type": "object",
+  "description": "Language-agnostic contract for a bounded context package with provenance. See Sources/CapabilityBridge/CapabilityBridge.swift for the Swift reference implementation.",
   "required": [
-    "contract_version",
-    "trace_id",
-    "active_device_id",
-    "transport_path",
-    "tabs",
-    "surfaces",
-    "hosts",
-    "read_states",
-    "active_tab_id",
-    "active_surface_id",
-    "note_refs",
-    "rule_refs",
-    "token_budget",
-    "raw_content_policy",
-    "timestamp"
+    "noteRefs",
+    "memorySnippets",
+    "artifactRefs",
+    "aurRefs",
+    "omissions",
+    "freshness",
+    "tokenBudget",
+    "rawContentPolicy"
   ],
   "properties": {
-    "contract_version": {
+    "workspaceSnapshot": {
+      "type": ["string", "null"],
+      "description": "Optional snapshot or summary of the current workspace state."
+    },
+    "noteRefs": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "References to notes included in the bundle."
+    },
+    "memorySnippets": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Short memory snippets promoted into the bundle."
+    },
+    "artifactRefs": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "References to artifacts the capability should consider."
+    },
+    "aurRefs": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "AUR (research/source) references included in the bundle."
+    },
+    "omissions": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Items intentionally excluded from the bundle, with reason."
+    },
+    "freshness": {
       "type": "string",
-      "const": "0.2.0"
+      "format": "date-time",
+      "description": "ISO 8601 timestamp when the bundle was assembled."
     },
-    "trace_id": {
-      "type": "string"
+    "tokenBudget": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Approximate token budget for the consuming capability."
     },
-    "active_device_id": {
-      "type": "string"
-    },
-    "transport_path": {
-      "$ref": "#/$defs/transport_path"
-    },
-    "tabs": {
-      "type": "array",
-      "items": {
-        "$ref": "#/$defs/cog_tab_snapshot"
-      }
-    },
-    "surfaces": {
-      "type": "array",
-      "items": {
-        "$ref": "#/$defs/cog_surface_snapshot"
-      }
-    },
-    "hosts": {
-      "type": "array",
-      "items": {
-        "$ref": "#/$defs/cog_host_snapshot"
-      }
-    },
-    "read_states": {
-      "type": "array",
-      "items": {
-        "$ref": "#/$defs/cog_read_state"
-      }
-    },
-    "active_tab_id": {
-      "type": [
-        "string",
-        "null"
-      ]
-    },
-    "active_surface_id": {
-      "type": [
-        "string",
-        "null"
-      ]
-    },
-    "note_refs": {
-      "type": "array",
-      "items": {
-        "type": "string"
-      }
-    },
-    "rule_refs": {
-      "type": "array",
-      "items": {
-        "type": "string"
-      }
-    },
-    "token_budget": {
-      "type": "integer"
-    },
-    "raw_content_policy": {
-      "type": "string"
-    },
-    "timestamp": {
-      "type": "integer"
+    "rawContentPolicy": {
+      "type": "string",
+      "description": "Policy controlling how raw content is handled (e.g. redact-sensitive)."
     }
   },
-  "additionalProperties": false,
-  "$defs": {
-    "metadata": {
-      "type": "object",
-      "description": "A metadata bag with string keys and arbitrary JSON values.",
-      "additionalProperties": true
-    },
-    "tab_type": {
-      "type": "string",
-      "enum": [
-        "agent_cli",
-        "terminal",
-        "browser",
-        "ide",
-        "document",
-        "custom"
-      ],
-      "description": "The kind of workspace tab."
-    },
-    "status": {
-      "type": "string",
-      "enum": [
-        "idle",
-        "running",
-        "reading",
-        "waiting_for_user",
-        "done",
-        "failed",
-        "blocked"
-      ],
-      "description": "The runtime status of a tab or process."
-    },
-    "surface_type": {
-      "type": "string",
-      "enum": [
-        "terminal_multiplexer",
-        "browser_window",
-        "ide_window",
-        "os_workspace",
-        "custom"
-      ],
-      "description": "The kind of surface that contains tabs."
-    },
-    "host_type": {
-      "type": "string",
-      "enum": [
-        "tmux",
-        "browser_extension",
-        "ide_plugin",
-        "manual"
-      ],
-      "description": "The kind of host adapter."
-    },
-    "host_capability": {
-      "type": "string",
-      "enum": [
-        "discover_tabs",
-        "send_input",
-        "read_output",
-        "switch_tab",
-        "close_tab",
-        "push_status"
-      ],
-      "description": "A capability that a host adapter may declare."
-    },
-    "host_status": {
-      "type": "string",
-      "enum": [
-        "connected",
-        "disconnected",
-        "degraded"
-      ],
-      "description": "The high-level connectivity state of a host."
-    },
-    "transport_path": {
-      "type": "string",
-      "enum": [
-        "bonjour",
-        "iCloud",
-        "offline"
-      ],
-      "description": "The active transport path between COG devices."
-    },
-    "cog_tab_snapshot": {
-      "type": "object",
-      "description": "A lightweight, privacy-aware snapshot of a tab for SDL context.",
-      "required": [
-        "id",
-        "type",
-        "title",
-        "status",
-        "surface_id",
-        "host_id",
-        "metadata"
-      ],
-      "properties": {
-        "id": {
-          "type": "string"
-        },
-        "type": {
-          "$ref": "#/$defs/tab_type"
-        },
-        "title": {
-          "type": "string"
-        },
-        "status": {
-          "$ref": "#/$defs/status"
-        },
-        "surface_id": {
-          "type": "string"
-        },
-        "host_id": {
-          "type": "string"
-        },
-        "metadata": {
-          "$ref": "#/$defs/metadata"
-        }
-      },
-      "additionalProperties": false
-    },
-    "cog_surface_snapshot": {
-      "type": "object",
-      "description": "A lightweight snapshot of a surface for SDL context.",
-      "required": [
-        "id",
-        "type",
-        "host_id",
-        "tabs",
-        "active_tab_id"
-      ],
-      "properties": {
-        "id": {
-          "type": "string"
-        },
-        "type": {
-          "$ref": "#/$defs/surface_type"
-        },
-        "host_id": {
-          "type": "string"
-        },
-        "tabs": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        },
-        "active_tab_id": {
-          "type": [
-            "string",
-            "null"
-          ]
-        }
-      },
-      "additionalProperties": false
-    },
-    "cog_host_snapshot": {
-      "type": "object",
-      "description": "A lightweight snapshot of a host for SDL context.",
-      "required": [
-        "id",
-        "type",
-        "name",
-        "capabilities",
-        "status",
-        "last_heartbeat"
-      ],
-      "properties": {
-        "id": {
-          "type": "string"
-        },
-        "type": {
-          "$ref": "#/$defs/host_type"
-        },
-        "name": {
-          "type": "string"
-        },
-        "capabilities": {
-          "type": "array",
-          "items": {
-            "$ref": "#/$defs/host_capability"
-          }
-        },
-        "status": {
-          "$ref": "#/$defs/host_status"
-        },
-        "last_heartbeat": {
-          "type": "integer"
-        }
-      },
-      "additionalProperties": false
-    },
-    "cog_read_state": {
-      "type": "object",
-      "description": "The current read position for a tab.",
-      "required": [
-        "tab_id",
-        "chunk_index",
-        "line_start",
-        "line_end"
-      ],
-      "properties": {
-        "tab_id": {
-          "type": "string"
-        },
-        "chunk_index": {
-          "type": "integer"
-        },
-        "line_start": {
-          "type": "integer"
-        },
-        "line_end": {
-          "type": "integer"
-        }
-      },
-      "additionalProperties": false
-    }
-  }
+  "additionalProperties": false
 }

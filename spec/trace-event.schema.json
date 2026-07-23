@@ -1,75 +1,80 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "CogTraceEvent",
-  "description": "An append-only correlation record emitted from COG into SDL lifecycle records.",
+  "title": "trace event schema",
   "type": "object",
+  "description": "Language-agnostic contract for an append-only correlation record emitted by the bridge. See Sources/CapabilityBridge/TraceEventRequirements.swift for Phase 1 field requirements.",
   "required": [
-    "contract_version",
-    "trace_id",
-    "event_id",
-    "parent_event_id",
-    "event_type",
-    "subject_ref",
+    "eventId",
+    "eventType",
+    "traceId",
+    "subjectRef",
     "status",
     "outcome",
-    "payload_summary",
-    "payload_hash",
-    "artifact_refs",
-    "approval_refs",
-    "timestamp"
+    "payloadSummary",
+    "payloadHash"
   ],
   "properties": {
-    "contract_version": {
+    "eventId": {
       "type": "string",
-      "const": "0.2.0"
+      "description": "Unique identifier for this individual event, used for parent-child trace trees."
     },
-    "trace_id": {
-      "type": "string"
-    },
-    "event_id": {
-      "type": "string"
-    },
-    "parent_event_id": {
-      "type": [
-        "string",
-        "null"
-      ]
-    },
-    "event_type": {
+    "eventType": {
       "type": "string",
-      "$comment": "Event type values include intent_received, host_called, approval_presented, and approval_resolution. For approval_resolution events, set approval_refs to the request_id(s) of the resolved approval request(s) and set payload_summary to a concise description of the decision and resulting SDL task-phase transition."
+      "enum": [
+        "intent.received",
+        "task.framed",
+        "plan.produced",
+        "route.selected",
+        "approval.requested",
+        "approval.resolved",
+        "capability.invoked",
+        "capability.completed",
+        "trace.error"
+      ],
+      "description": "Well-known event kind. Additional kinds may be rejected by strict validators."
     },
-    "subject_ref": {
-      "type": "string"
+    "traceId": {
+      "type": "string",
+      "description": "Correlation identifier shared across all events for one top-level user request."
+    },
+    "parentEventId": {
+      "type": ["string", "null"],
+      "description": "Identifier of the parent event, if any, forming a trace tree."
+    },
+    "subjectRef": {
+      "type": "string",
+      "description": "Reference to the entity this event is about (intent id, task ref, plan ref, etc.)."
     },
     "status": {
-      "type": "string"
+      "type": "string",
+      "description": "Runtime status of the event (e.g. ok, error, pending)."
     },
     "outcome": {
-      "type": "string"
-    },
-    "payload_summary": {
       "type": "string",
-      "$comment": "For approval_resolution events, the payload summary SHOULD include the decision (approve/reject/redirect/pause_all/resume_all/stop_all) and the resulting task frame phase, e.g. 'decision=approve phase=executing'."
+      "description": "Human-readable outcome or disposition."
     },
-    "payload_hash": {
-      "type": "string"
+    "payloadSummary": {
+      "type": "string",
+      "description": "Compact, non-sensitive summary of the event payload."
     },
-    "artifact_refs": {
+    "payloadHash": {
+      "type": "string",
+      "description": "Cryptographic hash (SHA-256) of the canonical serialized payload for integrity, prefixed with 'sha256:'."
+    },
+    "artifactRefs": {
       "type": "array",
-      "items": {
-        "type": "string"
-      }
+      "items": { "type": "string" },
+      "description": "References to artifacts produced or consumed by this event."
     },
-    "approval_refs": {
+    "approvalRefs": {
       "type": "array",
-      "items": {
-        "type": "string"
-      },
-      "$comment": "For approval_resolution events, approval_refs MUST contain the request_id of the resolved approval request."
+      "items": { "type": "string" },
+      "description": "References to approval requests or resolutions tied to this event."
     },
-    "timestamp": {
-      "type": "integer"
+    "attributes": {
+      "type": "object",
+      "additionalProperties": { "type": "string" },
+      "description": "Kind-specific key-value attributes required or useful for validation and correlation."
     }
   },
   "additionalProperties": false
