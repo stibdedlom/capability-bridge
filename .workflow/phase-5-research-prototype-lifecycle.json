@@ -1,0 +1,49 @@
+{
+  "id": "b2c3d4e5-f6a7-8901-bcde-f23456789012",
+  "task_ref": "phase-5-research-prototype-4-7-8-10",
+  "branch": "feat/phase-5-research-prototype-4-7-8-10",
+  "actor": "v-i-s-h-a-l",
+  "revision": 1,
+  "created_event": "autonomous-issue-fix-phase-5",
+  "classification": "research",
+  "tier": 2,
+  "preflight": {
+    "touched_paths": [
+      "docs/roadmap.md",
+      "docs/product-strategy.md",
+      "docs/research-index.md",
+      "prototypes/worker-reviewer/",
+      ".workflow/phase-5-research-prototype-lifecycle.json"
+    ],
+    "required_reviewers": [
+      "BASE",
+      "FLOW"
+    ],
+    "adr_required": false,
+    "flags": [
+      "ai-only-review",
+      "admin-merge"
+    ]
+  },
+  "status": "open",
+  "links": {
+    "issues": [
+      "https://github.com/stibdedlom/capability-bridge/issues/4",
+      "https://github.com/stibdedlom/capability-bridge/issues/7",
+      "https://github.com/stibdedlom/capability-bridge/issues/8",
+      "https://github.com/stibdedlom/capability-bridge/issues/10"
+    ]
+  },
+  "authority_envelope": {
+    "allow_mutation": true,
+    "allowed_paths": [
+      "docs/",
+      "prototypes/",
+      ".workflow/"
+    ],
+    "branch_or_worktree_isolation": "feat/phase-5-research-prototype-4-7-8-10",
+    "approval_gate": "cross-agent-review",
+    "verification_and_rollback_plan": "Run swift test and ./prototypes/worker-reviewer/demo.sh. Rollback: revert added docs and prototype directory."
+  },
+  "audit_hash": "06493ee97ec79b8f7b471d47c90b685ec0c1c26fe6f6f63f7d24fd2d997c5ba7"
+}

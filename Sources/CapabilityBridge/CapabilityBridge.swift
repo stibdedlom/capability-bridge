@@ -4,6 +4,9 @@
 /// expressed as JSON Schema in `spec/`. Concrete adapters for COG, SDL,
 /// pane backends, approval surfaces, and model routers live in separate
 /// modules so they can be replaced without changing the core.
+///
+/// `CapabilityBridge` is intentionally thin: it does not import UI frameworks
+/// or `WorkspaceCore`, and it performs no SDL capability execution.
 
 import Foundation
 

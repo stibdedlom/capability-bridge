@@ -1,0 +1,14 @@
+{
+  "schema_version": "1.0.0",
+  "goal": "Capability Bridge Phase 2 approval envelope: define ApprovalRequest/ApprovalResponse schemas and trace event contract (stibdedlom/capability-bridge#9)",
+  "task_ref": "parallel-issue-fanout-2026-06-28-lane-b",
+  "intent": "execution",
+  "decision": "route_to_existing_capability",
+  "capability_id": "capability-registry",
+  "role": null,
+  "confidence": "high",
+  "reason": "heuristic fallback selects capability-registry for spec/schema/registry work",
+  "outcome": "routed",
+  "selected_capability": "capability-registry",
+  "selected_role": null
+}

@@ -1,0 +1,77 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "CogApprovalResponse",
+  "description": "COG's response to an SDL approval request (Phase 2 approval envelope).",
+  "type": "object",
+  "required": [
+    "contract_version",
+    "request_id",
+    "task_frame_ref",
+    "decision",
+    "surface_ref",
+    "resolved_at"
+  ],
+  "properties": {
+    "contract_version": {
+      "type": "string",
+      "const": "0.3.0"
+    },
+    "request_id": {
+      "type": "string",
+      "description": "Stable identifier of the approval request being answered."
+    },
+    "task_frame_ref": {
+      "type": "string",
+      "description": "Reference to the task frame that generated the request."
+    },
+    "decision": {
+      "$ref": "#/$defs/approval_decision"
+    },
+    "surface_ref": {
+      "type": "string",
+      "description": "Reference to the surface that rendered the approval."
+    },
+    "resolved_at": {
+      "type": "integer",
+      "description": "When the response was created (Unix milliseconds)."
+    },
+    "reason": {
+      "type": "string",
+      "description": "Optional human-readable explanation for the decision."
+    },
+    "new_scope": {
+      "type": "string",
+      "description": "Required when decision is redirect; the reframed scope."
+    }
+  },
+  "additionalProperties": false,
+  "if": {
+    "properties": {
+      "decision": {
+        "const": "redirect"
+      }
+    },
+    "required": [
+      "decision"
+    ]
+  },
+  "then": {
+    "required": [
+      "new_scope"
+    ]
+  },
+  "$defs": {
+    "approval_decision": {
+      "type": "string",
+      "enum": [
+        "approve",
+        "reject",
+        "redirect",
+        "pause_all",
+        "resume_all",
+        "stop_all"
+      ],
+      "description": "The user's decision on an SDL approval request."
+    }
+  }
+}

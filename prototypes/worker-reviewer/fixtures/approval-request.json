@@ -1,0 +1,19 @@
+{
+  "schema_version": "0.2.0",
+  "approval_request_id": "ar-worker-reviewer-demo-001",
+  "task_frame_id": "tf-worker-reviewer-demo-001",
+  "trace_event_id": "te-checkpoint-001",
+  "requested_by": "reviewer",
+  "reason": "unapproved_file_mutation",
+  "proposed_action": {
+    "type": "create_file",
+    "path": "Tests/CapabilityBridgeTests/TraceEventSchemaTests.swift"
+  },
+  "options": [
+    "approve",
+    "reject",
+    "redirect",
+    "stop"
+  ],
+  "created_at": "2026-07-15T12:01:00Z"
+}

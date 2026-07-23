@@ -4,7 +4,10 @@ import PackageDescription
 let package = Package(
     name: "capability-bridge",
     platforms: [
-        .macOS(.v26)
+        .macOS(.v26),
+        .iOS(.v26),
+        .tvOS(.v26),
+        .watchOS(.v26)
     ],
     products: [
         .library(name: "CapabilityBridge", targets: ["CapabilityBridge"]),
@@ -14,13 +17,16 @@ let package = Package(
         .library(name: "ApprovalSurfaces", targets: ["ApprovalSurfaces"]),
         .library(name: "ModelRouting", targets: ["ModelRouting"]),
     ],
+    dependencies: [
+        .package(url: "https://github.com/cocogiri/workspace-types.git", branch: "main")
+    ],
     targets: [
-        .target(name: "CapabilityBridge"),
-        .target(name: "CapabilityBridgeCOG", dependencies: ["CapabilityBridge", "CapabilityBridgeSDL", "ApprovalSurfaces"]),
-        .target(name: "CapabilityBridgeSDL", dependencies: ["CapabilityBridge"]),
-        .target(name: "PaneBackends", dependencies: ["CapabilityBridge"]),
-        .target(name: "ApprovalSurfaces", dependencies: ["CapabilityBridge"]),
-        .target(name: "ModelRouting", dependencies: ["CapabilityBridge"]),
-        .testTarget(name: "CapabilityBridgeTests", dependencies: ["CapabilityBridge", "CapabilityBridgeSDL", "CapabilityBridgeCOG", "ApprovalSurfaces"]),
+        .target(name: "CapabilityBridge", dependencies: [.product(name: "WorkspaceTypes", package: "workspace-types")]),
+        .target(name: "CapabilityBridgeCOG", dependencies: ["CapabilityBridge", "CapabilityBridgeSDL", "ApprovalSurfaces", .product(name: "WorkspaceTypes", package: "workspace-types")]),
+        .target(name: "CapabilityBridgeSDL", dependencies: ["CapabilityBridge", .product(name: "WorkspaceTypes", package: "workspace-types")]),
+        .target(name: "PaneBackends", dependencies: ["CapabilityBridge", .product(name: "WorkspaceTypes", package: "workspace-types")]),
+        .target(name: "ApprovalSurfaces", dependencies: ["CapabilityBridge", .product(name: "WorkspaceTypes", package: "workspace-types")]),
+        .target(name: "ModelRouting", dependencies: ["CapabilityBridge", .product(name: "WorkspaceTypes", package: "workspace-types")]),
+        .testTarget(name: "CapabilityBridgeTests", dependencies: ["CapabilityBridge", "CapabilityBridgeCOG", "CapabilityBridgeSDL", "PaneBackends", "ApprovalSurfaces", .product(name: "WorkspaceTypes", package: "workspace-types")]),
     ]
 )

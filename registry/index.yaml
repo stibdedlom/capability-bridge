@@ -1,0 +1,28 @@
+# Local capability registry for stibdedlom/capability-bridge.
+# Canonical source of truth is stibdedlom/infra/registry/index.yaml.
+# This file exists so that lifecycle-record validation can resolve the
+# capability declared by in-repo records without requiring a sibling infra
+# checkout at validation time.
+entries:
+  capability-registry:
+    lean_summary:
+      artifact_type: workflow
+      dependencies_roles:
+        - filesystem
+        - yaml-parser
+      lifecycle: beta
+      purpose: Loads, queries, resolves, and registers capability metadata with lean loading.
+      taste_alignment:
+        density: 0.6
+        motion: 0.1
+        variance: 0.2
+    origin:
+      external: false
+      org: stibdedlom
+      owner_org: stibdedlom
+      path: capabilities/capability_registry
+      ref: main
+      repo: infra
+      type: github
+      url: null
+    path: registry/capabilities/capability-registry.md

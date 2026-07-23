@@ -1,0 +1,21 @@
+capability_id: capability-factory
+request_id: sdl-automatic-trigger-adapter
+goal: >-
+  Update capability-workflow-router with a thin automatic trigger adapter layer
+  that routes host and repository events through invocation policy, authority
+  gates, and capability invocation telemetry.
+target_capability: capability-workflow-router
+operation: capability_update
+authority:
+  allow_mutation: true
+  allowed_paths:
+    - capabilities/capability_workflow_router/
+    - scripts/lifecycle/
+    - scripts/sentinel/
+    - scripts/monitor/
+    - registry/telemetry/capability/
+    - tests/
+    - docs/superpowers/specs/
+    - standards/
+  approval_gate: user-instruction
+  branch_or_worktree_isolation: feature/sdl-invocation-telemetry-enforcement
